@@ -1,0 +1,85 @@
+title: "Service Lifecycle"
+
+# Usamos una dirección horizontal para este flujo
+direction: down
+
+# Primera fase
+definition: "1. Definition Phase" {
+  shape: rectangle
+  style: {
+    fill: "#e9ecef"
+    stroke: "#6c757d"
+    stroke-width: 2
+  }
+
+  label: "PHP 8 Attributes\nClass Definition"
+}
+
+# Segunda fase
+discovery: "2. Discovery Phase" {
+  shape: rectangle
+  style: {
+    fill: "#dee2e6"
+    stroke: "#6c757d"
+    stroke-width: 2
+  }
+
+  label: "Compiler Passes\nService Registration"
+}
+
+# Tercera fase
+usage: "3. Usage Phase" {
+  shape: rectangle
+  style: {
+    fill: "#cfd4da"
+    stroke: "#6c757d"
+    stroke-width: 2
+  }
+
+  label: "Registry Access\nService Instantiation"
+}
+
+# Conexiones del flujo
+definition -> discovery: "Compile" {
+  style: {
+    stroke: "#495057"
+    stroke-width: 2
+  }
+}
+
+discovery -> usage: "Build" {
+  style: {
+    stroke: "#495057"
+    stroke-width: 2
+  }
+}
+
+# Elementos adicionales debajo de cada fase
+compiler_pass: "ServiceProcessingCompilerPass" {
+  shape: rectangle
+  style: {
+    fill: "#e7f5ff"
+    stroke: "#4dabf7"
+  }
+}
+
+config_pass: "ServiceConfigurationCompilerPass" {
+  shape: rectangle
+  style: {
+    fill: "#e7f5ff"
+    stroke: "#4dabf7"
+  }
+}
+
+registry: "PackageRegistry" {
+  shape: rectangle
+  style: {
+    fill: "#e7f5ff"
+    stroke: "#4dabf7"
+  }
+}
+
+# Conexiones a los elementos adicionales
+discovery -- compiler_pass
+discovery -- config_pass
+usage -- registry

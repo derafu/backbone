@@ -1,0 +1,102 @@
+title: "Component Interaction Sequence" {
+  style.font-size: 24
+}
+
+# Participants
+client: "Client" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+registry: "Registry" {
+  shape: rectangle
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+package: "Package" {
+  shape: rectangle
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+component: "Component" {
+  shape: rectangle
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+worker: "Worker" {
+  shape: rectangle
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+job: "Job" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#007bff"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+# Sequence
+client -> registry: "1. getPackage(\"name\")" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+registry -> package: "2. Return package instance" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+client -> component: "3. getComponent(\"name\")" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+client -> worker: "4. getWorker(\"name\")" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+client -> job: "5. getJob(\"name\")" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+client -> job: "6. execute(params)" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+job .-> client: "7. Return result" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+  style.stroke-dash: 5
+}
+
+# Alternative path
+alt: "Alternative: Using Handler" {
+  shape: rectangle
+  style.fill: "#f8f9fa"
+  style.stroke: "#495057"
+  style.stroke-width: 1
+  style.stroke-dash: 5
+  style.border-radius: 5
+}
+
+client -> worker: "5a. getHandler(\"name\")" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}
+client -> worker: "6a. handle(params)" {
+  style.stroke: "#495057"
+  style.stroke-width: 1
+}

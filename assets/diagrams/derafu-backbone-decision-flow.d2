@@ -1,0 +1,78 @@
+title: "When to Use Each Component" {
+  style.font-size: 24
+}
+
+start: "Start" {
+  shape: circle
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+}
+
+decision1: "Is the operation atomic\nand self-contained?" {
+  shape: diamond
+  style.fill: "#fff"
+  style.stroke: "#6c757d"
+  style.stroke-width: 2
+}
+
+job: "Job\nFor single tasks" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#007bff"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+decision2: "Does it orchestrate\nmultiple operations?" {
+  shape: diamond
+  style.fill: "#fff"
+  style.stroke: "#6c757d"
+  style.stroke-width: 2
+}
+
+handler: "Handler\nFor orchestration" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#20c997"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+decision3: "Is it a variant of a\nspecific algorithm?" {
+  shape: diamond
+  style.fill: "#fff"
+  style.stroke: "#6c757d"
+  style.stroke-width: 2
+}
+
+strategy: "Strategy\nFor variants" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#4dabf7"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+worker: "Worker\nDirect implementation" {
+  shape: rectangle
+  style.fill: "#fff"
+  style.stroke: "#6c757d"
+  style.stroke-width: 2
+  style.border-radius: 5
+}
+
+start -> decision1
+decision1 -> job: "Yes"
+decision1 -> decision2: "No"
+decision2 -> handler: "Yes"
+decision2 -> decision3: "No"
+decision3 -> strategy: "Yes"
+decision3 -> worker: "No"
+
+job .-> handler: "Used by" {
+  style.stroke-dash: 5
+}
+strategy .-> handler: "Used by" {
+  style.stroke-dash: 5
+}

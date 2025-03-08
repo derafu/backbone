@@ -1,0 +1,63 @@
+# Derafu Backbone - Component Relationships
+direction: down
+
+# Define core components
+package: Package {
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+  style.shadow: true
+  label: "Package"
+}
+
+component: Component {
+  style.fill: "#dee2e6"
+  style.stroke: "#6c757d"
+  style.stroke-width: 2
+  style.border-radius: 5
+  style.shadow: true
+  label: "Component"
+}
+
+worker: Worker {
+  style.fill: "#e9ecef"
+  style.stroke: "#6c757d"
+  style.border-radius: 5
+  style.shadow: true
+  label: "Worker"
+}
+
+job: Job {
+  style.fill: "#fff"
+  style.stroke: "#007bff"
+  style.stroke-width: 2
+  style.border-radius: 5
+  style.shadow: true
+  label: "Job"
+}
+
+handler: Handler {
+  style.fill: "#fff"
+  style.stroke: "#20c997"
+  style.stroke-width: 2
+  style.border-radius: 5
+  style.shadow: true
+  label: "Handler"
+}
+
+strategy: Strategy {
+  style.fill: "#e7f5ff"
+  style.stroke: "#4dabf7"
+  style.border-radius: 3
+  label: "Strategy"
+}
+
+# Define relationships with explanations
+package -> component: "Contains\nProvides configuration"
+component -> worker: "Contains\nShares resources"
+worker -> job: "Delegates simple tasks\nProvides input data"
+worker -> handler: "Delegates complex processes\nProvides context"
+handler -> job: "Orchestrates\nManages sequence"
+handler -> strategy: "Selects\nProvides context"
+job --> strategy: "May use\nfor implementation"

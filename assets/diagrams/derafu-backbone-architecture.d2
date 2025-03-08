@@ -1,0 +1,61 @@
+# Derafu Backbone - Core Architecture Components
+direction: down
+
+# Main hierarchy with simplified components
+package: Package {
+  style.fill: "#e9ecef"
+  style.stroke: "#495057"
+  style.stroke-width: 2
+  style.border-radius: 5
+  style.shadow: true
+  label: "Package\n\"Domain-level container\""
+
+  component: Component {
+    style.fill: "#dee2e6"
+    style.stroke: "#6c757d"
+    style.stroke-width: 2
+    style.border-radius: 5
+    style.shadow: true
+    label: "Component\n\"Functional area\""
+
+    worker: Worker {
+      style.fill: "#e9ecef"
+      style.stroke: "#6c757d"
+      style.border-radius: 5
+      style.shadow: true
+      label: "Worker\n\"Coordinates operations\""
+
+      job: Job {
+        style.fill: "#fff"
+        style.stroke: "#007bff"
+        style.stroke-width: 2
+        style.border-radius: 5
+        style.shadow: true
+        label: "Job\n\"Atomic operation\""
+      }
+
+      handler: Handler {
+        style.fill: "#fff"
+        style.stroke: "#20c997"
+        style.stroke-width: 2
+        style.border-radius: 5
+        style.shadow: true
+        label: "Handler\n\"Complex process\""
+
+        strategy: Strategy {
+          style.fill: "#e7f5ff"
+          style.stroke: "#4dabf7"
+          style.border-radius: 3
+          label: "Strategy\n\"Algorithm implementation\""
+        }
+      }
+    }
+  }
+}
+
+# Simple hierarchical connections
+package -> component
+component -> worker
+worker -> job
+worker -> handler
+handler -> strategy

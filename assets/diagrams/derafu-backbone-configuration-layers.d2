@@ -1,0 +1,89 @@
+title: "Configuration Layers"
+
+container: {
+  direction: down
+
+  # Añadimos un poco de espacio visual
+  spacing: 40
+
+  package_layer: "Package Configuration" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+      stroke: "#6c757d"
+      stroke-width: 2
+    }
+  }
+
+  component_layer: "Component Configuration" {
+    shape: rectangle
+    style: {
+      fill: "#dee2e6"
+      stroke: "#6c757d"
+      stroke-width: 2
+    }
+  }
+
+  worker_layer: "Worker Configuration" {
+    shape: rectangle
+    style: {
+      fill: "#cfd4da"
+      stroke: "#6c757d"
+      stroke-width: 2
+    }
+  }
+
+  service_layer: "Job/Handler/Strategy Configuration" {
+    shape: rectangle
+    style: {
+      fill: "#c5ccd3"
+      stroke: "#6c757d"
+      stroke-width: 2
+    }
+  }
+
+  # Mejoramos las conexiones
+  package_layer -> component_layer: "Inherits" {
+    style: {
+      stroke: "#495057"
+      stroke-width: 2
+    }
+  }
+
+  component_layer -> worker_layer: "Inherits" {
+    style: {
+      stroke: "#495057"
+      stroke-width: 2
+    }
+  }
+
+  worker_layer -> service_layer: "Inherits" {
+    style: {
+      stroke: "#495057"
+      stroke-width: 2
+    }
+  }
+
+  # Anotaciones
+  a1: "Domain-wide settings" {
+    style: {
+      font-size: 12
+    }
+  }
+
+  a2: "Feature-specific settings" {
+    style: {
+      font-size: 12
+    }
+  }
+
+  a3: "Task-specific settings" {
+    style: {
+      font-size: 12
+    }
+  }
+
+  package_layer -- a1
+  component_layer -- a2
+  worker_layer -- a3
+}

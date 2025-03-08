@@ -1,0 +1,140 @@
+title: "Recommended File Structure"
+
+direction: right
+
+project_dir: {
+  src: "src/" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+    }
+
+    domain: "Domain/" {
+      shape: rectangle
+      style: {
+        fill: "#dee2e6"
+      }
+
+      package_file: "DomainPackage.php" {
+        shape: rectangle
+        style: {
+          fill: "#fff"
+          stroke: "#007bff"
+        }
+      }
+
+      component_dir: "Component/" {
+        shape: rectangle
+        style: {
+          fill: "#cfd4da"
+        }
+
+        component_file: "Component.php" {
+          shape: rectangle
+          style: {
+            fill: "#fff"
+            stroke: "#6c757d"
+          }
+        }
+
+        worker_dir: "Worker/" {
+          shape: rectangle
+          style: {
+            fill: "#c5ccd3"
+          }
+
+          worker_file: "Worker.php" {
+            shape: rectangle
+            style: {
+              fill: "#fff"
+              stroke: "#6c757d"
+            }
+          }
+
+          job_dir: "Job/" {
+            shape: rectangle
+            style: {
+              fill: "#bbc4cd"
+            }
+
+            job_file: "Job.php" {
+              shape: rectangle
+              style: {
+                fill: "#fff"
+                stroke: "#007bff"
+              }
+            }
+          }
+
+          handler_dir: "Handler/" {
+            shape: rectangle
+            style: {
+              fill: "#bbc4cd"
+            }
+
+            handler_file: "Handler.php" {
+              shape: rectangle
+              style: {
+                fill: "#fff"
+                stroke: "#20c997"
+              }
+            }
+          }
+
+          strategy_dir: "Strategy/" {
+            shape: rectangle
+            style: {
+              fill: "#bbc4cd"
+            }
+
+            strategy_file: "Strategy.php" {
+              shape: rectangle
+              style: {
+                fill: "#fff"
+                stroke: "#4dabf7"
+              }
+            }
+          }
+        }
+      }
+
+      model_dir: "Model/" {
+        shape: rectangle
+        style: {
+          fill: "#cfd4da"
+        }
+
+        model_file: "Model.php" {
+          shape: rectangle
+          style: {
+            fill: "#fff"
+            stroke: "#6c757d"
+          }
+        }
+      }
+    }
+
+    registry_file: "Registry.php" {
+      shape: rectangle
+      style: {
+        fill: "#fff"
+        stroke: "#007bff"
+      }
+    }
+  }
+
+  config: "config/" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+    }
+
+    services: "services.yaml" {
+      shape: rectangle
+      style: {
+        fill: "#fff"
+        stroke: "#6c757d"
+      }
+    }
+  }
+}

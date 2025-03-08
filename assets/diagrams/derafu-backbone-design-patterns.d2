@@ -1,0 +1,81 @@
+title: "Backbone and Design Patterns"
+
+direction: right
+
+patterns: {
+  # Jobs column
+  jobs: "Jobs" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+      stroke: "#007bff"
+      stroke-width: 2
+    }
+
+    description: "Atomic operations\nwith clear inputs/outputs"
+    pattern: "Command Pattern" {
+      style: {
+        fill: "#e7f5ff"
+      }
+    }
+  }
+
+  # Handlers column
+  handlers: "Handlers" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+      stroke: "#20c997"
+      stroke-width: 2
+    }
+
+    description: "Orchestration of\ncomplex workflows"
+    pattern: "Mediator + Chain\nof Responsibility" {
+      style: {
+        fill: "#e7f5ff"
+      }
+    }
+  }
+
+  # Strategies column
+  strategies: "Strategies" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+      stroke: "#4dabf7"
+      stroke-width: 2
+    }
+
+    description: "Variant implementations\nfor algorithms"
+    pattern: "Strategy Pattern" {
+      style: {
+        fill: "#e7f5ff"
+      }
+    }
+  }
+
+  # Workers column
+  workers: "Workers" {
+    shape: rectangle
+    style: {
+      fill: "#e9ecef"
+      stroke: "#6c757d"
+      stroke-width: 2
+    }
+
+    description: "Coordination and\npublic API"
+    pattern: "Facade Pattern" {
+      style: {
+        fill: "#e7f5ff"
+      }
+    }
+  }
+}
+
+hexagonal: "Overall architecture inspired by Hexagonal/Ports and Adapters" {
+  shape: rectangle
+  style: {
+    fill: "#dee2e6"
+    stroke: "#495057"
+  }
+}
