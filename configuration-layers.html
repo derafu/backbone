@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-configuration-layers-in-derafu-backbone" href="configuration-layers.html#content-configuration-layers-in-derafu-backbone" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuration Layers in Derafu Backbone</h1>
+<p>This document explores how configuration cascades through the architectural layers in Derafu Backbone, providing a powerful and flexible way to configure your application.</p>
+<ul class="table-of-contents">
+<li><a href="configuration-layers.html#content-configuration-hierarchy">Configuration Hierarchy</a>
+<ul>
+<li><a href="configuration-layers.html#content-package-configuration">Package Configuration</a></li>
+<li><a href="configuration-layers.html#content-component-configuration">Component Configuration</a></li>
+<li><a href="configuration-layers.html#content-worker-configuration">Worker Configuration</a></li>
+<li><a href="configuration-layers.html#content-jobhandlerstrategy-configuration">Job/Handler/Strategy Configuration</a></li>
+</ul>
+</li>
+<li><a href="configuration-layers.html#content-accessing-configuration">Accessing Configuration</a></li>
+<li><a href="configuration-layers.html#content-configuration-inheritance-mechanism">Configuration Inheritance Mechanism</a></li>
+<li><a href="configuration-layers.html#content-best-practices-for-configuration-management">Best Practices for Configuration Management</a></li>
+</ul>
+<p class="w-75 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-configuration-layers.svg" alt="Configuration Layers" /></p>
+<h2><a id="content-configuration-hierarchy" href="configuration-layers.html#content-configuration-hierarchy" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuration Hierarchy</h2>
+<p>Derafu Backbone implements a hierarchical configuration system that follows the same structure as the architectural components. This cascade system allows for powerful customization while maintaining sensible defaults.</p>
+<h3><a id="content-package-configuration" href="configuration-layers.html#content-package-configuration" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Package Configuration</h3>
+<p>At the top of the hierarchy is the Package configuration, which provides the foundation for all configuration within a domain:</p>
+<pre><code class="line-numbers match-braces language-yaml"># Example package configuration.
+example_package:
+  options:
+    debug: false
+    cache_enabled: true
+  components:
+    example_component:
+      # Component-specific configuration.
+    another_component:
+      # Another component's configuration.
+</code></pre>
+<p>Package configuration is ideal for:</p>
+<ul>
+<li>Domain-wide settings that affect all components.</li>
+<li>Default values that components can override.</li>
+<li>Shared service configuration.</li>
+<li>Environment-specific settings for an entire domain.</li>
+<li>Feature flags that affect the entire package.</li>
+</ul>
+<p>The Package configuration establishes the baseline for all contained components.</p>
+<h3><a id="content-component-configuration" href="configuration-layers.html#content-component-configuration" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Component Configuration</h3>
+<p>The Component configuration provides more specific settings for a functional area within a package:</p>
+<pre><code class="line-numbers match-braces language-yaml"># Component configuration within a package.
+example_package:
+  components:
+    example_component:
+      options:
+        timeout: 30
+        max_retries: 3
+      workers:
+        example_worker:
+          # Worker-specific configuration.
+        another_worker:
+          # Another worker's configuration.
+</code></pre>
+<p>Component configuration is appropriate for:</p>
+<ul>
+<li>Feature-specific settings.</li>
+<li>Overriding package defaults for a specific component.</li>
+<li>API keys or endpoints for external services used by the component.</li>
+<li>Component-specific validation rules or constraints.</li>
+<li>Logging or monitoring settings for a component.</li>
+</ul>
+<p>Component configuration inherits from the package level but can override any setting as needed.</p>
+<h3><a id="content-worker-configuration" href="configuration-layers.html#content-worker-configuration" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Worker Configuration</h3>
+<p>Worker configuration provides even more specific settings for individual workers within a component:</p>
+<pre><code class="line-numbers match-braces language-yaml"># Worker configuration within a component
+example_package:
+  components:
+    example_component:
+      workers:
+        example_worker:
+          options:
+            batch_size: 100
+            processing_mode: &quot;async&quot;
+          jobs:
+            # Job-specific configuration
+          handlers:
+            # Handler-specific configuration
+</code></pre>
+<p>Worker configuration is useful for:</p>
+<ul>
+<li>Task-specific settings.</li>
+<li>Overriding component defaults for a specific worker.</li>
+<li>Performance tuning parameters.</li>
+<li>Feature flags for specific functionality.</li>
+<li>Worker-specific thresholds or limits.</li>
+</ul>
+<p>Worker configuration inherits from both the package and component levels.</p>
+<h3><a id="content-jobhandlerstrategy-configuration" href="configuration-layers.html#content-jobhandlerstrategy-configuration" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Job/Handler/Strategy Configuration</h3>
+<p>At the lowest level, individual jobs, handlers, and strategies can have their own configuration:</p>
+<pre><code class="line-numbers match-braces language-yaml"># Job configuration within a worker
+example_package:
+  components:
+    example_component:
+      workers:
+        example_worker:
+          jobs:
+            example_job:
+              options:
+                validation_level: &quot;strict&quot;
+                timeout: 10
+</code></pre>
+<p>This level of configuration is ideal for:</p>
+<ul>
+<li>Operation-specific settings.</li>
+<li>Fine-grained control over individual operations.</li>
+<li>Feature flags for specific functionality.</li>
+<li>Operation-specific thresholds or limits.</li>
+</ul>
+<h2><a id="content-accessing-configuration" href="configuration-layers.html#content-accessing-configuration" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Accessing Configuration</h2>
+<p>Derafu Backbone provides a consistent way to access configuration at any level through the <code>ConfigurableInterface</code> and the <code>ConfigurableTrait</code>:</p>
+<pre><code class="line-numbers match-braces language-php">// Inside a package, component, or worker.
+$config = $this-&gt;getConfiguration();
+
+// Accessing specific options.
+$debug = $config-&gt;get('options.debug', false); // With default value.
+$timeout = $config-&gt;get('options.timeout'); // Without default.
+
+// Accessing nested configuration.
+$workerConfig = $config-&gt;get('workers.example_worker');
+</code></pre>
+<p>The configuration system is designed to be:</p>
+<ul>
+<li><strong>Type-safe</strong>: Configurations can be defined with schemas for validation.</li>
+<li><strong>Environment-aware</strong>: Different configurations can be loaded based on the environment.</li>
+<li><strong>Hierarchical</strong>: Configurations cascade from more general to more specific.</li>
+<li><strong>Defaulted</strong>: Sensible defaults can be provided at any level.</li>
+</ul>
+<h2><a id="content-configuration-inheritance-mechanism" href="configuration-layers.html#content-configuration-inheritance-mechanism" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuration Inheritance Mechanism</h2>
+<p>The key benefit of Backbone’s layered configuration is inheritance:</p>
+<ol>
+<li><strong>Default Values</strong>: Each layer can provide default values that are used if not overridden.</li>
+<li><strong>Selective Overrides</strong>: Lower levels can override specific settings without affecting others.</li>
+<li><strong>Aggregation</strong>: Configuration is aggregated from all levels before being used.</li>
+</ol>
+<p>For example, if you have these configurations:</p>
+<pre><code class="line-numbers match-braces language-yaml"># Package level.
+example_package:
+  options:
+    debug: false
+    cache_enabled: true
+    timeout: 30
+
+# Component level (in the same file).
+example_package:
+  components:
+    example_component:
+      options:
+        timeout: 60
+</code></pre>
+<p>Then, when accessing configuration from within <code>ExampleComponent</code>:</p>
+<pre><code class="line-numbers match-braces language-php">$config = $this-&gt;getConfiguration();
+$debug = $config-&gt;get('options.debug'); // false (inherited from package)
+$cacheEnabled = $config-&gt;get('options.cache_enabled'); // true (inherited from package)
+$timeout = $config-&gt;get('options.timeout'); // 60 (overridden at component level)
+</code></pre>
+<h2><a id="content-best-practices-for-configuration-management" href="configuration-layers.html#content-best-practices-for-configuration-management" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Best Practices for Configuration Management</h2>
+<p>When working with Backbone’s configuration layers:</p>
+<ol>
+<li><strong>Define defaults at the highest appropriate level</strong>: Place configuration that applies broadly at the package level.</li>
+<li><strong>Override only what’s necessary</strong>: Only override configuration when you need to change it.</li>
+<li><strong>Be explicit about types and validation</strong>: Use configuration schemas to validate configuration.</li>
+<li><strong>Use environment-specific configuration</strong>: Leverage environment variables and profiles for environment-specific settings.</li>
+<li><strong>Document your configuration</strong>: Clearly document what configuration options are available and what they do.</li>
+<li><strong>Keep sensitive information separate</strong>: Use environment variables or dedicated configuration stores for secrets.</li>
+</ol>
+<p>By understanding and effectively using Backbone’s configuration layers, you can create flexible, configurable applications that are easy to adapt to different environments and use cases.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action ">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action ">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action active">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action ">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action ">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action ">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>

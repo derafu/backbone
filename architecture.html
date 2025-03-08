@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-derafu-backbone-architecture" href="architecture.html#content-derafu-backbone-architecture" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Derafu Backbone Architecture</h1>
+<p>Derafu Backbone provides a structured framework for building modular and maintainable PHP libraries. It follows a hierarchical organization that separates concerns into distinct components, making your code more organized, testable, and extensible.</p>
+<ul class="table-of-contents">
+<li><a href="architecture.html#content-package">Package</a></li>
+<li><a href="architecture.html#content-component">Component</a></li>
+<li><a href="architecture.html#content-worker">Worker</a></li>
+<li><a href="architecture.html#content-job">Job</a></li>
+<li><a href="architecture.html#content-handler">Handler</a></li>
+<li><a href="architecture.html#content-strategy">Strategy</a></li>
+<li><a href="architecture.html#content-benefits-of-this-architecture">Benefits of This Architecture</a></li>
+<li><a href="architecture.html#content-design-pattern-comparisons">Design Pattern Comparisons</a></li>
+</ul>
+<p class="w-75 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-architecture.svg" alt="Derafu Backbone Core Architecture" /></p>
+<h3><a id="content-package" href="architecture.html#content-package" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Package</h3>
+<p><strong>Definition</strong>: A high-level container representing a complete domain or subdomain within your application.</p>
+<p><strong>Responsibility</strong>: Groups functionally related components that work together to provide domain-specific capabilities.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Represents a complete business domain (e.g., Billing, Accounting, Human Resources).</li>
+<li>Contains multiple components.</li>
+<li>Provides domain-wide configuration and services.</li>
+<li>Acts as the primary entry point for domain functionality.</li>
+</ul>
+<p><strong>Examples</strong>: <code>BillingPackage</code>, <code>AccountingPackage</code>, <code>HumanResourcesPackage</code></p>
+<h3><a id="content-component" href="architecture.html#content-component" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Component</h3>
+<p><strong>Definition</strong>: A functional area or module within a domain package.</p>
+<p><strong>Responsibility</strong>: Groups workers that handle specific aspects of the domain.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Represents a distinct functional area within a domain.</li>
+<li>Contains multiple workers focused on related tasks.</li>
+<li>Provides component-specific configuration.</li>
+<li>Manages cross-cutting concerns within its functional area.</li>
+</ul>
+<p><strong>Examples</strong>: <code>DocumentComponent</code>, <code>ExchangeComponent</code>, <code>TradingPartiesComponent</code></p>
+<h3><a id="content-worker" href="architecture.html#content-worker" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Worker</h3>
+<p><strong>Definition</strong>: Coordinator of business operations related to a specific aspect of functionality.</p>
+<p><strong>Responsibility</strong>: Exposes public methods that can be called by clients and coordinates Jobs, Handlers, and Strategies to perform work.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Acts as a facade for the underlying implementation.</li>
+<li>Exposes domain operations through public methods.</li>
+<li>Coordinates the execution of jobs and handlers.</li>
+<li>May implement simple operations directly.</li>
+<li>Delegates complex processing to handlers.</li>
+</ul>
+<p><strong>Examples</strong>: <code>BuilderWorker</code>, <code>RendererWorker</code></p>
+<h3><a id="content-job" href="architecture.html#content-job" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Job</h3>
+<p><strong>Definition</strong>: An atomic, self-contained unit of work that performs a single operation.</p>
+<p><strong>Responsibility</strong>: Executes a specific task with clear inputs and outputs.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Focused on doing one thing well.</li>
+<li>Encapsulates a single operation.</li>
+<li>Has clear, well-defined inputs and outputs.</li>
+<li>Does not orchestrate other jobs.</li>
+<li>Reusable across different contexts.</li>
+<li>Stateless and idempotent when possible.</li>
+</ul>
+<p><strong>Examples</strong>: <code>NormalizeBoletaAfectaJob</code>, <code>NormalizeFacturaAfectaJob</code></p>
+<h3><a id="content-handler" href="architecture.html#content-handler" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Handler</h3>
+<p><strong>Definition</strong>: Orchestrator of complex processes involving multiple operations.</p>
+<p><strong>Responsibility</strong>: Coordinates multiple jobs or strategies to complete complex workflows.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Orchestrates multiple operations in sequence.</li>
+<li>Manages workflow and process state.</li>
+<li>Selects appropriate strategies based on context.</li>
+<li>Handles errors and transactional boundaries.</li>
+<li>Implements business process logic.</li>
+<li>Can use multiple jobs and strategies.</li>
+</ul>
+<p><strong>Examples</strong>: <code>EmailSenderHandler</code>, <code>SiiSenderHandler</code></p>
+<h3><a id="content-strategy" href="architecture.html#content-strategy" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Strategy</h3>
+<p><strong>Definition</strong>: Specific implementation of an algorithm or approach to solving a problem.</p>
+<p><strong>Responsibility</strong>: Provides variant implementations for specific operations that can be interchanged.</p>
+<p><strong>Characteristics</strong>:</p>
+<ul>
+<li>Implements a specific algorithm or approach.</li>
+<li>Allows for swappable implementations.</li>
+<li>Used by handlers to provide different behaviors.</li>
+<li>Focuses on “how” something is done.</li>
+<li>Follows the Strategy design pattern.</li>
+<li>Encapsulates specific implementation details.</li>
+</ul>
+<p><strong>Examples</strong>: <code>JsonParserStrategy</code>, <code>XmlParserStrategy</code>, <code>YamlParserStrategy</code></p>
+<h2><a id="content-benefits-of-this-architecture" href="architecture.html#content-benefits-of-this-architecture" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of This Architecture</h2>
+<ol>
+<li><strong>Separation of Concerns</strong>: Each component has a clear, single responsibility.</li>
+<li><strong>Modularity</strong>: Components can be developed, tested, and deployed independently.</li>
+<li><strong>Extensibility</strong>: New implementations can be added without modifying existing code.</li>
+<li><strong>Testability</strong>: Clear boundaries make testing easier and more focused.</li>
+<li><strong>Maintainability</strong>: Organized structure makes the codebase easier to understand and maintain.</li>
+<li><strong>Flexibility</strong>: Strategies allow for varying implementations without changing coordination logic.</li>
+</ol>
+<h2><a id="content-design-pattern-comparisons" href="architecture.html#content-design-pattern-comparisons" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Design Pattern Comparisons</h2>
+<ul>
+<li><strong>Jobs</strong>: Similar to the Command Pattern.</li>
+<li><strong>Handlers</strong>: Combination of Chain of Responsibility and Mediator patterns.</li>
+<li><strong>Strategies</strong>: Direct implementation of the Strategy Pattern.</li>
+<li><strong>Workers</strong>: Follow the Facade Pattern.</li>
+<li><strong>Overall Structure</strong>: Influenced by Hexagonal/Ports and Adapters Architecture.</li>
+</ul>
+<p>This architecture provides a clear separation of responsibilities, allowing for component reuse and making your system more adaptable to changing requirements.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action active">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action ">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action ">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action ">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action ">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action ">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>

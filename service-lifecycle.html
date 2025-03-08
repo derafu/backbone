@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-service-lifecycle-in-derafu-backbone" href="service-lifecycle.html#content-service-lifecycle-in-derafu-backbone" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Service Lifecycle in Derafu Backbone</h1>
+<p>This document explains the lifecycle of services within Derafu Backbone, from definition to usage, providing insights into how services are discovered, configured, and instantiated.</p>
+<ul class="table-of-contents">
+<li><a href="service-lifecycle.html#content-three-phase-lifecycle">Three-Phase Lifecycle</a></li>
+<li><a href="service-lifecycle.html#content-1-definition-phase">1. Definition Phase</a>
+<ul>
+<li><a href="service-lifecycle.html#content-class-definition-with-php-8-attributes">Class Definition with PHP 8 Attributes</a></li>
+<li><a href="service-lifecycle.html#content-abstract-base-classes-and-interfaces">Abstract Base Classes and Interfaces</a></li>
+<li><a href="service-lifecycle.html#content-dependency-injection">Dependency Injection</a></li>
+</ul>
+</li>
+<li><a href="service-lifecycle.html#content-2-discovery-phase">2. Discovery Phase</a>
+<ul>
+<li><a href="service-lifecycle.html#content-compiler-passes">Compiler Passes</a></li>
+<li><a href="service-lifecycle.html#content-registration-and-aliasing">Registration and Aliasing</a></li>
+</ul>
+</li>
+<li><a href="service-lifecycle.html#content-3-usage-phase">3. Usage Phase</a>
+<ul>
+<li><a href="service-lifecycle.html#content-lazy-loading">Lazy Loading</a></li>
+<li><a href="service-lifecycle.html#content-accessing-services">Accessing Services</a></li>
+<li><a href="service-lifecycle.html#content-configuration-application">Configuration Application</a></li>
+</ul>
+</li>
+<li><a href="service-lifecycle.html#content-understanding-the-flow">Understanding the Flow</a></li>
+<li><a href="service-lifecycle.html#content-benefits-of-this-lifecycle">Benefits of This Lifecycle</a></li>
+<li><a href="service-lifecycle.html#content-troubleshooting-the-lifecycle">Troubleshooting the Lifecycle</a></li>
+</ul>
+<p class="w-75 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-service-lifecycle.svg" alt="Service Lifecycle" /></p>
+<h2><a id="content-three-phase-lifecycle" href="service-lifecycle.html#content-three-phase-lifecycle" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Three-Phase Lifecycle</h2>
+<p>Derafu Backbone services go through three distinct phases during their lifecycle:</p>
+<ol>
+<li><strong>Definition Phase</strong>: How services are defined in code.</li>
+<li><strong>Discovery Phase</strong>: How services are discovered and registered.</li>
+<li><strong>Usage Phase</strong>: How services are instantiated and used.</li>
+</ol>
+<p>Understanding this lifecycle is crucial for developing with Backbone and troubleshooting any issues that may arise.</p>
+<h2><a id="content-1-definition-phase" href="service-lifecycle.html#content-1-definition-phase" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>1. Definition Phase</h2>
+<p>The definition phase is where you define your Backbone services in code.</p>
+<h3><a id="content-class-definition-with-php-8-attributes" href="service-lifecycle.html#content-class-definition-with-php-8-attributes" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Class Definition with PHP 8 Attributes</h3>
+<p>The cornerstone of Backbone’s service definition is PHP 8 attributes. These attributes provide metadata about your services and eliminate the need for verbose configuration:</p>
+<pre><code class="line-numbers match-braces language-php">#[Package(name: 'billing', description: 'Handles billing operations')]
+class BillingPackage extends AbstractPackage implements PackageInterface
+{
+    // Package implementation.
+}
+
+#[Component(name: 'document', package: 'billing')]
+class DocumentComponent extends AbstractComponent implements ComponentInterface
+{
+    // Component implementation.
+}
+
+#[Worker(name: 'renderer', component: 'document', package: 'billing')]
+class RendererWorker extends AbstractWorker implements WorkerInterface
+{
+    // Worker implementation
+}
+</code></pre>
+<p>The attributes provide several key pieces of information:</p>
+<ul>
+<li><strong>Service type</strong>: Package, Component, Worker, Job, Handler, or Strategy</li>
+<li><strong>Service name</strong>: The identifier used to reference the service</li>
+<li><strong>Service hierarchy</strong>: The parent services (package, component, worker)</li>
+<li><strong>Description</strong>: Optional description for better documentation</li>
+</ul>
+<h3><a id="content-abstract-base-classes-and-interfaces" href="service-lifecycle.html#content-abstract-base-classes-and-interfaces" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Abstract Base Classes and Interfaces</h3>
+<p>All Backbone services extend abstract base classes and implement interfaces:</p>
+<ul>
+<li><strong>Abstract classes</strong> provide common functionality like configuration handling, ID generation, and standardized constructors.</li>
+<li><strong>Interfaces</strong> define the contract that each service must fulfill.</li>
+</ul>
+<p>This combination ensures consistent behavior and makes services interchangeable and testable.</p>
+<h3><a id="content-dependency-injection" href="service-lifecycle.html#content-dependency-injection" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Dependency Injection</h3>
+<p>Services declare their dependencies through constructor injection:</p>
+<pre><code class="line-numbers match-braces language-php">#[Component(name: 'document', package: 'billing')]
+class DocumentComponent extends AbstractComponent implements ComponentInterface
+{
+    public function __construct(
+        private readonly BuilderWorker $builderWorker,
+        private readonly RendererWorker $rendererWorker
+    ) {
+    }
+
+    public function getWorkers(): array
+    {
+        return [
+            'builder' =&gt; $this-&gt;builderWorker,
+            'renderer' =&gt; $this-&gt;rendererWorker,
+        ];
+    }
+
+    // Other component implementation.
+    // It's recommended to create getters for the dependencies. This will
+    // provide safe type hinting and autocompletion.
+}
+</code></pre>
+<p>This explicit declaration of dependencies:</p>
+<ul>
+<li>Makes dependencies clear and traceable.</li>
+<li>Facilitates testing through mocking.</li>
+<li>Allows the DI container to resolve dependencies automatically.</li>
+<li>Ensures services are properly initialized.</li>
+</ul>
+<h2><a id="content-2-discovery-phase" href="service-lifecycle.html#content-2-discovery-phase" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>2. Discovery Phase</h2>
+<p>The discovery phase is where defined services are found, processed, and registered in the dependency injection container.</p>
+<h3><a id="content-compiler-passes" href="service-lifecycle.html#content-compiler-passes" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Compiler Passes</h3>
+<p>Backbone uses Symfony’s compiler passes to discover and process services:</p>
+<h4><a id="content-serviceprocessingcompilerpass" href="service-lifecycle.html#content-serviceprocessingcompilerpass" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>ServiceProcessingCompilerPass</h4>
+<p>This compiler pass:</p>
+<ol>
+<li>Scans all service definitions in the container.</li>
+<li>Identifies classes with Backbone attributes.</li>
+<li>Extracts metadata from attributes.</li>
+<li>Creates and registers service definitions.</li>
+<li>Adds appropriate tags for later reference.</li>
+<li>Mark all services as lazy services.</li>
+<li>Mark only packages as public services.</li>
+</ol>
+<p>The result is that all Backbone services are properly registered in the container, with appropriate tags and metadata.</p>
+<h4><a id="content-serviceconfigurationcompilerpass" href="service-lifecycle.html#content-serviceconfigurationcompilerpass" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>ServiceConfigurationCompilerPass</h4>
+<p>This compiler pass:</p>
+<ol>
+<li>Finds services that implement <code>ConfigurableInterface</code>.</li>
+<li>Matches them with configuration from parameters.</li>
+<li>Adds method calls to set configuration when the service is created.</li>
+</ol>
+<p>This ensures that services receive their configuration during instantiation.</p>
+<h3><a id="content-registration-and-aliasing" href="service-lifecycle.html#content-registration-and-aliasing" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Registration and Aliasing</h3>
+<p>During the discovery phase, services are registered in the container and aliased for easier access:</p>
+<pre><code class="line-numbers match-braces language-php">// Original service ID (class name).
+App\Billing\DocumentComponent
+
+// Aliased as (from attribute metadata).
+billing.document
+</code></pre>
+<p>These aliases make it easier to reference services by their logical names rather than class names.</p>
+<h2><a id="content-3-usage-phase" href="service-lifecycle.html#content-3-usage-phase" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>3. Usage Phase</h2>
+<p>The usage phase is where services are actually instantiated and used at runtime.</p>
+<h3><a id="content-lazy-loading" href="service-lifecycle.html#content-lazy-loading" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Lazy Loading</h3>
+<p>By default, Backbone services are registered as lazy services. This means:</p>
+<ul>
+<li>They’re only instantiated when actually needed.</li>
+<li>A proxy is created that loads the real service on first method call.</li>
+<li>This improves performance by avoiding unnecessary service instantiation.</li>
+</ul>
+<h3><a id="content-accessing-services" href="service-lifecycle.html#content-accessing-services" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Accessing Services</h3>
+<p>Services can be accessed through the Package Registry:</p>
+<pre><code class="line-numbers match-braces language-php">// Get a package from the registry.
+$billingPackage = $packageRegistry-&gt;getPackage('billing');
+
+// Get a component from the package.
+$documentComponent = $billingPackage-&gt;getComponent('document');
+
+// Get a worker from the component.
+$rendererWorker = $documentComponent-&gt;getWorker('renderer');
+
+// Use the worker.
+$pdf = $rendererWorker-&gt;render($data);
+</code></pre>
+<p>Each level in the hierarchy provides access to the level below it, creating a discoverable API.</p>
+<h3><a id="content-configuration-application" href="service-lifecycle.html#content-configuration-application" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Configuration Application</h3>
+<p>When a service is instantiated:</p>
+<ol>
+<li>The container resolves its dependencies.</li>
+<li>Dependencies are injected via the constructor.</li>
+<li>Configuration is applied via a method call (if the service is configurable).</li>
+<li>The service is ready to use.</li>
+</ol>
+<p>This ensures that services are fully initialized before use.</p>
+<h2><a id="content-understanding-the-flow" href="service-lifecycle.html#content-understanding-the-flow" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Understanding the Flow</h2>
+<p>The complete flow from definition to usage:</p>
+<ol>
+<li><strong>Define</strong> services using PHP 8 attributes.</li>
+<li><strong>Compile</strong> the container, triggering discovery and registration.</li>
+<li><strong>Build</strong> the container for runtime use.</li>
+<li><strong>Access</strong> services through the registry.</li>
+<li><strong>Use</strong> services to perform domain operations.</li>
+</ol>
+<h2><a id="content-benefits-of-this-lifecycle" href="service-lifecycle.html#content-benefits-of-this-lifecycle" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of This Lifecycle</h2>
+<p>This lifecycle approach provides several benefits:</p>
+<ol>
+<li><strong>Discoverability</strong>: Services are easily discoverable through attributes.</li>
+<li><strong>Configuration</strong>: Services receive appropriate configuration automatically.</li>
+<li><strong>Lazy Loading</strong>: Only services that are actually used are instantiated.</li>
+<li><strong>Type Safety</strong>: The full hierarchy is type-safe through interfaces.</li>
+<li><strong>Testability</strong>: Dependencies are explicit and can be mocked for testing.</li>
+</ol>
+<h2><a id="content-troubleshooting-the-lifecycle" href="service-lifecycle.html#content-troubleshooting-the-lifecycle" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Troubleshooting the Lifecycle</h2>
+<p>Common issues and how to address them:</p>
+<ol>
+<li><strong>Service not found</strong>: Ensure attributes are correctly defined and the compiler pass is registered.</li>
+<li><strong>Configuration not applied</strong>: Check that your configuration keys match the expected structure.</li>
+<li><strong>Dependencies not resolved</strong>: Verify that all dependencies are correctly registered in the container.</li>
+<li><strong>Performance issues</strong>: Consider caching the compiled container in production.</li>
+</ol>
+<p>By understanding the complete service lifecycle in Derafu Backbone, you can effectively develop, configure, and troubleshoot your application.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action ">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action ">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action ">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action active">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action ">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action ">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>

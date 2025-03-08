@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-decision-flow-choosing-the-right-component" href="decision-flow.html#content-decision-flow-choosing-the-right-component" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Decision Flow: Choosing the Right Component</h1>
+<p>This document expands on the Decision Flow Diagram, helping you understand when to use each architectural component in Derafu Backbone.</p>
+<ul class="table-of-contents">
+<li><a href="decision-flow.html#content-understanding-the-decision-process">Understanding the Decision Process</a>
+<ul>
+<li><a href="decision-flow.html#content-when-to-use-jobs">When to Use Jobs</a></li>
+<li><a href="decision-flow.html#content-when-to-use-handlers">When to Use Handlers</a></li>
+<li><a href="decision-flow.html#content-when-to-use-strategies">When to Use Strategies</a></li>
+<li><a href="decision-flow.html#content-when-to-use-direct-worker-implementation">When to Use Direct Worker Implementation</a></li>
+</ul>
+</li>
+<li><a href="decision-flow.html#content-practical-applications">Practical Applications</a>
+<ul>
+<li><a href="decision-flow.html#content-component-relationships">Component Relationships</a></li>
+<li><a href="decision-flow.html#content-benefits-of-following-this-decision-flow">Benefits of Following This Decision Flow</a></li>
+<li><a href="decision-flow.html#content-edge-cases-and-considerations">Edge Cases and Considerations</a></li>
+</ul>
+</li>
+</ul>
+<p class="w-75 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-decision-flow.svg" alt="Decision Flow" /></p>
+<h2><a id="content-understanding-the-decision-process" href="decision-flow.html#content-understanding-the-decision-process" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Understanding the Decision Process</h2>
+<p>When implementing a new piece of functionality in Derafu Backbone, one of the most important decisions is determining which architectural component should handle that functionality. The diagram provides a decision tree to guide this process, but let’s explore the reasoning and implications of each choice.</p>
+<h3><a id="content-when-to-use-jobs" href="decision-flow.html#content-when-to-use-jobs" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>When to Use Jobs</h3>
+<p>Jobs are the workhorses of Backbone architecture. You should choose a Job when:</p>
+<ul>
+<li>The operation performs a <strong>single, well-defined task</strong></li>
+<li>The operation has <strong>clear inputs and outputs</strong></li>
+<li>The operation doesn’t need to manage complex flows or state</li>
+<li>The operation could potentially be reused in different contexts</li>
+</ul>
+<p>Jobs are particularly valuable when you need to implement operations that might be used by multiple handlers or directly by workers. They represent atomic units of work that should follow the Single Responsibility Principle.</p>
+<p><strong>Example scenarios for Jobs:</strong></p>
+<ul>
+<li>Validating input data</li>
+<li>Sending a notification</li>
+<li>Storing an entity in a repository</li>
+<li>Transforming data from one format to another</li>
+<li>Performing a calculation</li>
+</ul>
+<h3><a id="content-when-to-use-handlers" href="decision-flow.html#content-when-to-use-handlers" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>When to Use Handlers</h3>
+<p>Handlers should be your choice when:</p>
+<ul>
+<li>The operation involves <strong>multiple steps</strong> or jobs</li>
+<li>You need to <strong>orchestrate a complex workflow</strong></li>
+<li>There’s <strong>conditional logic</strong> determining the flow</li>
+<li>The operation manages <strong>transactional boundaries</strong></li>
+<li>You need to <strong>coordinate between different components</strong></li>
+</ul>
+<p>Handlers encapsulate complex business processes and provide a higher level of abstraction. They know how to execute a complete business use case by coordinating the execution of multiple jobs and selecting appropriate strategies.</p>
+<p><strong>Example scenarios for Handlers:</strong></p>
+<ul>
+<li>Processing a payment (validating, charging, recording transaction, sending receipt)</li>
+<li>Generating a report (gathering data, applying business rules, formatting, delivering)</li>
+<li>User registration flow (validating, creating account, sending welcome email, initializing user settings)</li>
+</ul>
+<h3><a id="content-when-to-use-strategies" href="decision-flow.html#content-when-to-use-strategies" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>When to Use Strategies</h3>
+<p>Strategies are the right choice when:</p>
+<ul>
+<li>You need <strong>multiple implementations</strong> of the same operation</li>
+<li>The implementation should be <strong>selectable at runtime</strong></li>
+<li>The implementation choice depends on <strong>context or configuration</strong></li>
+<li>You want to <strong>eliminate conditional logic</strong> from your handlers and jobs</li>
+</ul>
+<p>Strategies allow your system to adapt to different circumstances without changing the orchestration logic. They encapsulate the “how” of an operation, while jobs and handlers focus on the “what”.</p>
+<p><strong>Example scenarios for Strategies:</strong></p>
+<ul>
+<li>Different export formats (PDF, CSV, Excel)</li>
+<li>Multiple payment processors (Stripe, PayPal, Bank Transfer)</li>
+<li>Various notification channels (Email, SMS, Push Notification)</li>
+<li>Different storage backends (File System, S3, Database)</li>
+</ul>
+<h3><a id="content-when-to-use-direct-worker-implementation" href="decision-flow.html#content-when-to-use-direct-worker-implementation" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>When to Use Direct Worker Implementation</h3>
+<p>In some cases, you might implement functionality directly in the Worker:</p>
+<ul>
+<li>For very simple operations that don’t warrant a separate Job</li>
+<li>For operations that are specific to a particular Worker and won’t be reused</li>
+<li>When acting as a simple facade over third-party libraries</li>
+<li>For convenience methods that combine calls to Jobs or Handlers</li>
+</ul>
+<h2><a id="content-practical-applications" href="decision-flow.html#content-practical-applications" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Practical Applications</h2>
+<h3><a id="content-component-relationships" href="decision-flow.html#content-component-relationships" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Component Relationships</h3>
+<p>Notice how Jobs and Strategies are often used by Handlers. This relationship is key to understanding the architecture:</p>
+<ul>
+<li><strong>Jobs</strong> provide the atomic operations</li>
+<li><strong>Handlers</strong> orchestrate these operations</li>
+<li><strong>Strategies</strong> provide implementation variants</li>
+</ul>
+<h3><a id="content-benefits-of-following-this-decision-flow" href="decision-flow.html#content-benefits-of-following-this-decision-flow" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of Following This Decision Flow</h3>
+<p>By correctly choosing the appropriate architectural component:</p>
+<ol>
+<li><strong>Improved Testability</strong>: Jobs and Strategies are easier to test in isolation.</li>
+<li><strong>Enhanced Maintainability</strong>: Clear separation of concerns makes the code more maintainable.</li>
+<li><strong>Greater Flexibility</strong>: Strategies enable system adaptability without widespread changes.</li>
+<li><strong>Better Reusability</strong>: Jobs can be reused across multiple contexts.</li>
+<li><strong>Clearer Intent</strong>: The architecture communicates the intent of each piece of code.</li>
+</ol>
+<h3><a id="content-edge-cases-and-considerations" href="decision-flow.html#content-edge-cases-and-considerations" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Edge Cases and Considerations</h3>
+<ul>
+<li><strong>Size and Complexity</strong>: Very simple applications might not need the full hierarchy. Start with Jobs and add Handlers and Strategies as complexity grows.</li>
+<li><strong>Performance</strong>: While this architecture promotes good design, be mindful of potential overhead from excessive layering in performance-critical paths.</li>
+<li><strong>Boundaries</strong>: Consider your domain boundaries carefully when organizing packages and components.</li>
+</ul>
+<p>By following this decision flow, you can create a clean, maintainable, and adaptable codebase that effectively leverages the full potential of Derafu Backbone’s architecture.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action ">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action active">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action ">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action ">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action ">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action ">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-backbone-and-design-patterns" href="design-patterns.html#content-backbone-and-design-patterns" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Backbone and Design Patterns</h1>
+<p>This document explores how Derafu Backbone implements and leverages established design patterns to create a robust, maintainable architecture for PHP applications.</p>
+<ul class="table-of-contents">
+<li><a href="design-patterns.html#content-design-patterns-in-backbone">Design Patterns in Backbone</a></li>
+<li><a href="design-patterns.html#content-jobs-and-the-command-pattern">Jobs and the Command Pattern</a>
+<ul>
+<li><a href="design-patterns.html#content-command-pattern-overview">Command Pattern Overview</a></li>
+<li><a href="design-patterns.html#content-how-jobs-implement-command">How Jobs Implement Command</a></li>
+<li><a href="design-patterns.html#content-benefits-of-the-command-pattern-in-jobs">Benefits of the Command Pattern in Jobs</a></li>
+</ul>
+</li>
+<li><a href="design-patterns.html#content-handlers-and-the-mediatorchain-of-responsibility-patterns">Handlers and the Mediator/Chain of Responsibility Patterns</a>
+<ul>
+<li><a href="design-patterns.html#content-mediator-pattern-overview">Mediator Pattern Overview</a></li>
+<li><a href="design-patterns.html#content-chain-of-responsibility-overview">Chain of Responsibility Overview</a></li>
+<li><a href="design-patterns.html#content-how-handlers-implement-these-patterns">How Handlers Implement These Patterns</a></li>
+<li><a href="design-patterns.html#content-benefits-of-these-patterns-in-handlers">Benefits of These Patterns in Handlers</a></li>
+</ul>
+</li>
+<li><a href="design-patterns.html#content-strategies-and-the-strategy-pattern">Strategies and the Strategy Pattern</a>
+<ul>
+<li><a href="design-patterns.html#content-strategy-pattern-overview">Strategy Pattern Overview</a></li>
+<li><a href="design-patterns.html#content-how-strategies-implement-the-pattern">How Strategies Implement the Pattern</a></li>
+<li><a href="design-patterns.html#content-benefits-of-the-strategy-pattern">Benefits of the Strategy Pattern</a></li>
+</ul>
+</li>
+<li><a href="design-patterns.html#content-workers-and-the-facade-pattern">Workers and the Facade Pattern</a>
+<ul>
+<li><a href="design-patterns.html#content-facade-pattern-overview">Facade Pattern Overview</a></li>
+<li><a href="design-patterns.html#content-how-workers-implement-the-facade">How Workers Implement the Facade</a></li>
+<li><a href="design-patterns.html#content-benefits-of-the-facade-pattern-in-workers">Benefits of the Facade Pattern in Workers</a></li>
+</ul>
+</li>
+<li><a href="design-patterns.html#content-hexagonal-architecture-influence">Hexagonal Architecture Influence</a>
+<ul>
+<li><a href="design-patterns.html#content-hexagonal-architecture-overview">Hexagonal Architecture Overview</a></li>
+<li><a href="design-patterns.html#content-how-backbone-implements-hexagonal-concepts">How Backbone Implements Hexagonal Concepts</a></li>
+</ul>
+</li>
+<li><a href="design-patterns.html#content-practical-application">Practical Application</a></li>
+</ul>
+<p class="w-50 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-design-patterns.svg" alt="Design Patterns" /></p>
+<h2><a id="content-design-patterns-in-backbone" href="design-patterns.html#content-design-patterns-in-backbone" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Design Patterns in Backbone</h2>
+<p>Derafu Backbone draws inspiration from several well-established design patterns. Understanding these patterns and their implementation in Backbone helps developers use the framework effectively and extend it appropriately.</p>
+<h2><a id="content-jobs-and-the-command-pattern" href="design-patterns.html#content-jobs-and-the-command-pattern" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Jobs and the Command Pattern</h2>
+<p>Jobs in Backbone are a direct implementation of the Command Pattern.</p>
+<h3><a id="content-command-pattern-overview" href="design-patterns.html#content-command-pattern-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Command Pattern Overview</h3>
+<p>The Command Pattern encapsulates a request as an object, allowing:</p>
+<ul>
+<li>Parameterization of clients with different requests.</li>
+<li>Queueing of requests.</li>
+<li>Logging of requests.</li>
+<li>Support for undoable operations.</li>
+</ul>
+<h3><a id="content-how-jobs-implement-command" href="design-patterns.html#content-how-jobs-implement-command" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>How Jobs Implement Command</h3>
+<p>Jobs in Backbone embody these principles:</p>
+<ul>
+<li>Each job is a class that encapsulates a single operation.</li>
+<li>Jobs have a standardized execution method (<code>execute()</code>).</li>
+<li>Jobs can be parameterized through their execute method.</li>
+<li>Jobs are self-contained and can be invoked by various clients.</li>
+</ul>
+<pre><code class="line-numbers match-braces language-php">#[Job(name: 'create', worker: 'generator', component: 'invoice', package: 'billing')]
+class CreateInvoiceJob extends AbstractJob implements JobInterface
+{
+    public function execute(array $data): Invoice
+    {
+        // Validate input.
+        $this-&gt;validateInput($data);
+
+        // Create invoice
+        $invoice = new Invoice();
+        $invoice-&gt;setCustomer($data['customer']);
+        $invoice-&gt;setItems($data['items']);
+
+        // Return result.
+        return $invoice;
+    }
+
+    private function validateInput(array $data): void
+    {
+        // Validation logic.
+    }
+}
+</code></pre>
+<h3><a id="content-benefits-of-the-command-pattern-in-jobs" href="design-patterns.html#content-benefits-of-the-command-pattern-in-jobs" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of the Command Pattern in Jobs</h3>
+<p>This implementation provides several advantages:</p>
+<ul>
+<li><strong>Single Responsibility</strong>: Each job has a clear, specific purpose.</li>
+<li><strong>Reusability</strong>: Jobs can be reused in different contexts.</li>
+<li><strong>Testability</strong>: Jobs are easy to test in isolation.</li>
+<li><strong>Extensibility</strong>: New jobs can be added without modifying existing code.</li>
+<li><strong>Queueability</strong>: Jobs can be serialized and queued for asynchronous processing.</li>
+</ul>
+<h2><a id="content-handlers-and-the-mediatorchain-of-responsibility-patterns" href="design-patterns.html#content-handlers-and-the-mediatorchain-of-responsibility-patterns" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Handlers and the Mediator/Chain of Responsibility Patterns</h2>
+<p>Handlers in Backbone combine aspects of both the Mediator and Chain of Responsibility patterns.</p>
+<h3><a id="content-mediator-pattern-overview" href="design-patterns.html#content-mediator-pattern-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Mediator Pattern Overview</h3>
+<p>The Mediator Pattern defines an object that encapsulates how a set of objects interact, promoting loose coupling by preventing objects from referring to each other explicitly.</p>
+<h3><a id="content-chain-of-responsibility-overview" href="design-patterns.html#content-chain-of-responsibility-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Chain of Responsibility Overview</h3>
+<p>The Chain of Responsibility Pattern passes a request along a chain of handlers, with each handler deciding either to process the request or pass it to the next handler.</p>
+<h3><a id="content-how-handlers-implement-these-patterns" href="design-patterns.html#content-how-handlers-implement-these-patterns" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>How Handlers Implement These Patterns</h3>
+<p>Handlers in Backbone combine these concepts:</p>
+<ul>
+<li>They coordinate interactions between multiple Jobs (Mediator).</li>
+<li>They orchestrate a sequence of operations (Chain of Responsibility).</li>
+<li>They encapsulate complex workflows.</li>
+</ul>
+<pre><code class="line-numbers match-braces language-php">#[Handler(name: 'process', worker: 'processor', component: 'invoice', package: 'billing')]
+class ProcessInvoiceHandler extends AbstractHandler implements HandlerInterface
+{
+    public function handle(Invoice $invoice, array $options = []): Result
+    {
+        // Validate the invoice.
+        $validationResult = $this-&gt;getJob('validate')-&gt;execute($invoice);
+        if (!$validationResult-&gt;isValid()) {
+            return Result::failure($validationResult-&gt;getErrors());
+        }
+
+        // Determine processing strategy.
+        $strategyName = $options['strategy'] ?? 'default';
+        $strategy = $this-&gt;getStrategy($strategyName);
+
+        // Process the invoice.
+        $processingResult = $strategy-&gt;process($invoice);
+        if (!$processingResult-&gt;isSuccessful()) {
+            return Result::failure($processingResult-&gt;getErrors());
+        }
+
+        // Send notifications.
+        $this-&gt;getJob('notify')-&gt;execute($invoice, $options['notifications'] ?? []);
+
+        // Return success.
+        return Result::success(['invoice' =&gt; $invoice, 'processed' =&gt; true]);
+    }
+}
+</code></pre>
+<h3><a id="content-benefits-of-these-patterns-in-handlers" href="design-patterns.html#content-benefits-of-these-patterns-in-handlers" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of These Patterns in Handlers</h3>
+<p>This implementation provides several advantages:</p>
+<ul>
+<li><strong>Decoupling</strong>: Components don’t need to know about each other.</li>
+<li><strong>Centralized Control</strong>: Complex workflows are managed in a single place.</li>
+<li><strong>Flexibility</strong>: Processing steps can be changed without affecting clients.</li>
+<li><strong>Transactional Boundaries</strong>: Handlers can manage transactions across multiple operations.</li>
+<li><strong>Error Handling</strong>: Centralized error handling for multi-step processes.</li>
+</ul>
+<h2><a id="content-strategies-and-the-strategy-pattern" href="design-patterns.html#content-strategies-and-the-strategy-pattern" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Strategies and the Strategy Pattern</h2>
+<p>Strategies in Backbone are a direct implementation of the Strategy Pattern.</p>
+<h3><a id="content-strategy-pattern-overview" href="design-patterns.html#content-strategy-pattern-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Strategy Pattern Overview</h3>
+<p>The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the algorithm vary independently from clients that use it.</p>
+<h3><a id="content-how-strategies-implement-the-pattern" href="design-patterns.html#content-how-strategies-implement-the-pattern" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>How Strategies Implement the Pattern</h3>
+<p>Strategies in Backbone embody these principles:</p>
+<ul>
+<li>They provide alternative implementations of an algorithm.</li>
+<li>They share a common interface.</li>
+<li>They can be selected and switched at runtime.</li>
+</ul>
+<pre><code class="line-numbers match-braces language-php">#[Strategy(name: 'pdf', worker: 'renderer', component: 'document', package: 'billing')]
+class PdfRenderStrategy extends AbstractStrategy implements RenderStrategyInterface
+{
+    public function render(Document $document): string
+    {
+        // PDF rendering implementation.
+        return $this-&gt;pdfRenderer-&gt;renderDocument($document);
+    }
+}
+
+#[Strategy(name: 'html', worker: 'renderer', component: 'document', package: 'billing')]
+class HtmlRenderStrategy extends AbstractStrategy implements RenderStrategyInterface
+{
+    public function render(Document $document): string
+    {
+        // HTML rendering implementation.
+        return $this-&gt;htmlRenderer-&gt;renderDocument($document);
+    }
+}
+</code></pre>
+<h3><a id="content-benefits-of-the-strategy-pattern" href="design-patterns.html#content-benefits-of-the-strategy-pattern" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of the Strategy Pattern</h3>
+<p>This implementation provides several advantages:</p>
+<ul>
+<li><strong>Encapsulation</strong>: Different algorithms are encapsulated in separate classes.</li>
+<li><strong>Interchangeability</strong>: Strategies can be swapped without changing client code.</li>
+<li><strong>Elimination of Conditionals</strong>: Complex conditional logic is replaced with polymorphism.</li>
+<li><strong>Runtime Selection</strong>: Algorithms can be selected based on runtime conditions.</li>
+<li><strong>Testability</strong>: Each strategy can be tested independently.</li>
+</ul>
+<h2><a id="content-workers-and-the-facade-pattern" href="design-patterns.html#content-workers-and-the-facade-pattern" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Workers and the Facade Pattern</h2>
+<p>Workers in Backbone implement the Facade Pattern.</p>
+<h3><a id="content-facade-pattern-overview" href="design-patterns.html#content-facade-pattern-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Facade Pattern Overview</h3>
+<p>The Facade Pattern provides a unified interface to a set of interfaces in a subsystem. It defines a higher-level interface that makes the subsystem easier to use.</p>
+<h3><a id="content-how-workers-implement-the-facade" href="design-patterns.html#content-how-workers-implement-the-facade" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>How Workers Implement the Facade</h3>
+<p>Workers in Backbone act as facades:</p>
+<ul>
+<li>They provide a simplified interface to complex subsystems.</li>
+<li>They handle the complexity of coordinating jobs, handlers, and strategies.</li>
+<li>They expose domain operations through a clean API.</li>
+</ul>
+<pre><code class="line-numbers match-braces language-php">#[Worker(name: 'processor', component: 'invoice', package: 'billing')]
+class InvoiceProcessorWorker extends AbstractWorker implements WorkerInterface
+{
+    // This method is part of the public API.
+    public function processInvoice(Invoice $invoice, array $options = []): Result
+    {
+        // Delegate to the appropriate handler.
+        return $this-&gt;getHandler('process')-&gt;handle($invoice, $options);
+    }
+
+    // Another public API method.
+    public function validateInvoice(Invoice $invoice): ValidationResult
+    {
+        // Delegate to a job.
+        return $this-&gt;getJob('validate')-&gt;execute($invoice);
+    }
+}
+</code></pre>
+<h3><a id="content-benefits-of-the-facade-pattern-in-workers" href="design-patterns.html#content-benefits-of-the-facade-pattern-in-workers" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Benefits of the Facade Pattern in Workers</h3>
+<p>This implementation provides several advantages:</p>
+<ul>
+<li><strong>Simplified Interface</strong>: Clients interact with a clean, focused API.</li>
+<li><strong>Reduced Coupling</strong>: Clients don’t need to know about the subsystem’s components.</li>
+<li><strong>Unified Entry Point</strong>: Workers provide a single entry point to related functionality.</li>
+<li><strong>Abstraction</strong>: Implementation details are hidden behind the facade.</li>
+</ul>
+<h2><a id="content-hexagonal-architecture-influence" href="design-patterns.html#content-hexagonal-architecture-influence" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Hexagonal Architecture Influence</h2>
+<p>The overall architecture of Backbone is inspired by Hexagonal Architecture (also known as Ports and Adapters).</p>
+<h3><a id="content-hexagonal-architecture-overview" href="design-patterns.html#content-hexagonal-architecture-overview" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Hexagonal Architecture Overview</h3>
+<p>Hexagonal Architecture aims to create loosely coupled application components that can be easily connected to their software environment by means of ports and adapters.</p>
+<h3><a id="content-how-backbone-implements-hexagonal-concepts" href="design-patterns.html#content-how-backbone-implements-hexagonal-concepts" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>How Backbone Implements Hexagonal Concepts</h3>
+<p>Backbone incorporates these principles:</p>
+<ul>
+<li><strong>Domain-Centric</strong>: The architecture focuses on domain logic.</li>
+<li><strong>Ports</strong>: Interfaces define how components interact.</li>
+<li><strong>Adapters</strong>: Implementations connect the domain to external systems.</li>
+<li><strong>Inversion of Control</strong>: Dependencies point inward toward the domain.</li>
+</ul>
+<p>The Package-Component-Worker structure creates clear boundaries within the domain, while Strategies often serve as adapters to external systems.</p>
+<h2><a id="content-practical-application" href="design-patterns.html#content-practical-application" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Practical Application</h2>
+<p>When applying these design patterns in your Backbone applications:</p>
+<ol>
+<li><strong>Identify the Pattern</strong>: Recognize which pattern applies to your situation.</li>
+<li><strong>Follow the Template</strong>: Use the appropriate Backbone component.</li>
+<li><strong>Respect the Boundaries</strong>: Maintain separation between different components.</li>
+<li><strong>Leverage Polymorphism</strong>: Use strategies for variant implementations.</li>
+<li><strong>Focus on Composition</strong>: Prefer composition over inheritance.</li>
+</ol>
+<p>By understanding and applying these design patterns within Backbone, you can create well-structured, maintainable applications that are flexible enough to adapt to changing requirements.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action ">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action ">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action ">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action ">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action active">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action ">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>

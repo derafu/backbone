@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derafu: Backbone - The Architectural Spine for PHP Libraries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown-light.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.css" rel="stylesheet" />
+    <link href="https://derafu.org/foundation/css/styles.min.css" rel="stylesheet" />
+    </head>
+<body class="derafu-theme-earthstone">
+                <div id="header-container" class="sticky-top"></div>
+    
+            <div class="container">
+            <div class="row">
+                <main class="col-md-9">
+                    <div class="container py-4">
+    <div class="markdown-body"><h1><a id="content-recommended-file-structure-for-backbone-projects" href="file-structure.html#content-recommended-file-structure-for-backbone-projects" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Recommended File Structure for Backbone Projects</h1>
+<p>This document provides guidelines for organizing your code in Derafu Backbone projects, explaining the rationale behind the recommended structure and best practices for maintaining a clean, maintainable codebase.</p>
+<ul class="table-of-contents">
+<li><a href="file-structure.html#content-domain-first-organization">Domain-First Organization</a>
+<ul>
+<li><a href="file-structure.html#content-root-structure">Root Structure</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-domain-structure">Domain Structure</a>
+<ul>
+<li><a href="file-structure.html#content-key-elements">Key Elements</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-component-structure">Component Structure</a>
+<ul>
+<li><a href="file-structure.html#content-key-elements-1">Key Elements</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-namespacing">Namespacing</a></li>
+<li><a href="file-structure.html#content-the-benefits-of-this-structure">The Benefits of This Structure</a>
+<ul>
+<li><a href="file-structure.html#content-1-domain-discovery">1. Domain Discovery</a></li>
+<li><a href="file-structure.html#content-2-component-cohesion">2. Component Cohesion</a></li>
+<li><a href="file-structure.html#content-3-clear-dependencies">3. Clear Dependencies</a></li>
+<li><a href="file-structure.html#content-4-consistent-navigation">4. Consistent Navigation</a></li>
+<li><a href="file-structure.html#content-5-scalable-organization">5. Scalable Organization</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-best-practices">Best Practices</a>
+<ul>
+<li><a href="file-structure.html#content-naming-conventions">Naming Conventions</a></li>
+<li><a href="file-structure.html#content-file-organization-tips">File Organization Tips</a></li>
+<li><a href="file-structure.html#content-exception-hierarchy">Exception Hierarchy</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-real-world-adaptations">Real-World Adaptations</a>
+<ul>
+<li><a href="file-structure.html#content-microservice-adaptations">Microservice Adaptations</a></li>
+<li><a href="file-structure.html#content-legacy-integration-adaptations">Legacy Integration Adaptations</a></li>
+<li><a href="file-structure.html#content-infrastructure-concerns">Infrastructure Concerns</a></li>
+</ul>
+</li>
+<li><a href="file-structure.html#content-conclusion">Conclusion</a></li>
+</ul>
+<p class="w-75 mx-auto"><img src="http://127.0.0.1:9000/img/derafu-backbone-file-structure.svg" alt="File Structure" /></p>
+<h2><a id="content-domain-first-organization" href="file-structure.html#content-domain-first-organization" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Domain-First Organization</h2>
+<p>Derafu Backbone encourages a domain-first approach to organizing your codebase. This means that the primary organizing principle is the business domain, not technical concerns.</p>
+<h3><a id="content-root-structure" href="file-structure.html#content-root-structure" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Root Structure</h3>
+<p>A typical Backbone project is organized as follows:</p>
+<pre><code class="line-numbers match-braces">src/
+├── Domain1/
+├── Domain2/
+├── Domain3/
+└── Registry.php
+config/
+└── services.yaml
+</code></pre>
+<p>This structure puts domains at the forefront, making it immediately clear what business capabilities your application provides.</p>
+<h2><a id="content-domain-structure" href="file-structure.html#content-domain-structure" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Domain Structure</h2>
+<p>Each domain (represented by a Package) follows a consistent internal structure:</p>
+<pre><code class="line-numbers match-braces">Domain/
+├── DomainPackage.php
+├── Component/
+│   ├── Component1.php
+│   └── Component2.php
+├── Model/
+│   ├── Model1.php
+│   └── Model2.php
+└── Exception/
+    └── DomainException.php
+</code></pre>
+<h3><a id="content-key-elements" href="file-structure.html#content-key-elements" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Key Elements</h3>
+<ul>
+<li><strong>DomainPackage.php</strong>: The package class that serves as the entry point to the domain</li>
+<li><strong>Component/</strong>: Directory containing all components of this domain</li>
+<li><strong>Model/</strong>: Directory containing domain models (entities, value objects, etc.)</li>
+<li><strong>Exception/</strong>: Domain-specific exceptions</li>
+</ul>
+<h2><a id="content-component-structure" href="file-structure.html#content-component-structure" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Component Structure</h2>
+<p>Each component has its own structure that houses its workers and related classes:</p>
+<pre><code class="line-numbers match-braces">Component/
+├── Component.php
+└── Worker/
+    ├── Worker1.php
+    ├── Worker2.php
+    ├── Job/
+    │   ├── Job1.php
+    │   └── Job2.php
+    ├── Handler/
+    │   ├── Handler1.php
+    │   └── Handler2.php
+    └── Strategy/
+        ├── Strategy1.php
+        └── Strategy2.php
+</code></pre>
+<h3><a id="content-key-elements-1" href="file-structure.html#content-key-elements-1" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Key Elements</h3>
+<ul>
+<li><strong>Component.php</strong>: The component class that serves as the entry point to this functional area</li>
+<li><strong>Worker/</strong>: Directory containing workers and their related classes</li>
+<li><strong>Job/</strong>: Directory containing jobs used by workers</li>
+<li><strong>Handler/</strong>: Directory containing handlers used by workers</li>
+<li><strong>Strategy/</strong>: Directory containing strategies used by handlers and jobs</li>
+</ul>
+<h2><a id="content-namespacing" href="file-structure.html#content-namespacing" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Namespacing</h2>
+<p>The file structure directly corresponds to the namespace structure, following PSR-4 autoloading standards:</p>
+<pre><code class="line-numbers match-braces language-php">// DomainPackage.php
+namespace App\Domain;
+
+// Component.php
+namespace App\Domain\Component;
+
+// Worker.php
+namespace App\Domain\Component\Worker;
+
+// Job.php
+namespace App\Domain\Component\Worker\Job;
+</code></pre>
+<p>This clear correspondence between namespaces and directories makes it easy to locate files and understand their role in the architecture.</p>
+<h2><a id="content-the-benefits-of-this-structure" href="file-structure.html#content-the-benefits-of-this-structure" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>The Benefits of This Structure</h2>
+<h3><a id="content-1-domain-discovery" href="file-structure.html#content-1-domain-discovery" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>1. Domain Discovery</h3>
+<p>The domain-first structure makes it easy to discover what domains your application handles. New team members can quickly understand the application’s purpose by examining the top-level directories.</p>
+<h3><a id="content-2-component-cohesion" href="file-structure.html#content-2-component-cohesion" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>2. Component Cohesion</h3>
+<p>By grouping related components within a domain, the structure promotes cohesion. Classes that work together are located near each other, making it easier to understand and modify related functionality.</p>
+<h3><a id="content-3-clear-dependencies" href="file-structure.html#content-3-clear-dependencies" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>3. Clear Dependencies</h3>
+<p>The hierarchical structure reflects the dependency hierarchy in Backbone, making it clear how components relate to each other.</p>
+<h3><a id="content-4-consistent-navigation" href="file-structure.html#content-4-consistent-navigation" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>4. Consistent Navigation</h3>
+<p>Once familiar with the structure, developers can quickly navigate to any part of the codebase, even in unfamiliar domains, because the pattern is consistent.</p>
+<h3><a id="content-5-scalable-organization" href="file-structure.html#content-5-scalable-organization" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>5. Scalable Organization</h3>
+<p>The structure scales well from small applications to large enterprise systems. As your application grows, you can add new domains without restructuring existing code.</p>
+<h2><a id="content-best-practices" href="file-structure.html#content-best-practices" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Best Practices</h2>
+<h3><a id="content-naming-conventions" href="file-structure.html#content-naming-conventions" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Naming Conventions</h3>
+<p>Adopting consistent naming conventions enhances the clarity of your codebase:</p>
+<ul>
+<li><strong>Packages</strong>: Use singular nouns (e.g., <code>Billing</code>, not <code>Bills</code>).</li>
+<li><strong>Components</strong>: Use singular nouns that describe their functionality (e.g., <code>Document</code>, <code>Exchange</code>).</li>
+<li><strong>Workers</strong>: Use a noun followed by “Worker” (e.g., <code>BuilderWorker</code>, <code>RendererWorker</code>).</li>
+<li><strong>Jobs</strong>: Use a verb in the imperative followed by a noun (e.g., <code>CreateInvoice</code>, <code>SendNotification</code>).</li>
+<li><strong>Handlers</strong>: Use a verb in the imperative followed by a noun and “Handler” (e.g., <code>ProcessPaymentHandler</code>).</li>
+<li><strong>Strategies</strong>: Use a descriptive adjective or noun followed by the purpose and “Strategy” (e.g., <code>PdfRenderStrategy</code>, <code>StripePaymentStrategy</code>).</li>
+</ul>
+<h3><a id="content-file-organization-tips" href="file-structure.html#content-file-organization-tips" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>File Organization Tips</h3>
+<ol>
+<li><strong>Group Related Files</strong>: Keep files that are likely to change together in the same directory.</li>
+<li><strong>Domain Boundaries</strong>: Be careful about cross-domain dependencies. If components in different domains need to communicate, consider defining interfaces.</li>
+<li><strong>Package Size</strong>: If a package grows too large (more than 7-10 components), consider splitting it into multiple packages.</li>
+<li><strong>Shared Code</strong>: Place shared code that’s used across multiple domains in a separate <code>Shared</code> or <code>Common</code> package.</li>
+<li><strong>Infrastructure Code</strong>: Place infrastructure concerns (like database access, HTTP clients, etc.) in appropriate domains rather than in a separate “infrastructure” layer.</li>
+</ol>
+<h3><a id="content-exception-hierarchy" href="file-structure.html#content-exception-hierarchy" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Exception Hierarchy</h3>
+<p>Match your exception hierarchy to your package/component hierarchy:</p>
+<pre><code class="line-numbers match-braces">Exception/
+├── DomainException.php (base exception for the domain).
+├── ComponentException.php (base exception for a component).
+├── SpecificException1.php (specific exception type).
+└── SpecificException2.php (specific exception type).
+</code></pre>
+<p>This makes error handling more consistent and helps identify the source of exceptions.</p>
+<h2><a id="content-real-world-adaptations" href="file-structure.html#content-real-world-adaptations" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Real-World Adaptations</h2>
+<p>While the recommended structure provides a solid foundation, you may need to adapt it to your specific needs.</p>
+<h3><a id="content-microservice-adaptations" href="file-structure.html#content-microservice-adaptations" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Microservice Adaptations</h3>
+<p>In a microservice architecture, each service might represent a single domain or even a single component:</p>
+<pre><code class="line-numbers match-braces">services/
+├── billing-service/
+│   └── src/
+│       └── Billing/
+└── customer-service/
+    └── src/
+        └── Customer/
+</code></pre>
+<h3><a id="content-legacy-integration-adaptations" href="file-structure.html#content-legacy-integration-adaptations" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Legacy Integration Adaptations</h3>
+<p>When integrating with legacy systems, you might need a different structure for adapter code:</p>
+<pre><code class="line-numbers match-braces">src/
+├── Domain/
+│   └── ...
+└── Legacy/
+    └── Adapter/
+        └── ...
+</code></pre>
+<h3><a id="content-infrastructure-concerns" href="file-structure.html#content-infrastructure-concerns" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Infrastructure Concerns</h3>
+<p>For complex applications, you might introduce additional directories for infrastructure concerns:</p>
+<pre><code class="line-numbers match-braces">src/
+├── Domain/
+├── Infrastructure/
+│   ├── Database/
+│   ├── Queue/
+│   └── Cache/
+└── Registry.php
+</code></pre>
+<p>However, try to keep these separate from your domain logic and limit dependencies on them from your domain code.</p>
+<h2><a id="content-conclusion" href="file-structure.html#content-conclusion" class="text-decoration-none small text-muted" aria-hidden="true" title="Permalink"><i class="fa-solid fa-link"></i> </a>Conclusion</h2>
+<p>The recommended file structure for Derafu Backbone projects emphasizes domain-driven organization, consistent patterns, and clear separation of concerns. By following these guidelines, you can create codebases that are easy to navigate, maintain, and extend, regardless of the size or complexity of your application.</p>
+<p>Remember that the structure should serve your team and your application’s needs. While consistency is important, don’t be afraid to adapt the recommended structure when necessary to better suit your specific context.</p>
+</div>
+</div>
+                </main>
+                <div class="col-md-3 py-4">
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">Package Info</div>
+                                <span class="smal text-muted">
+                                    <a href="https://github.com/derafu/backbone" target="_blank" class="link-secondary text-decoration-none">
+                                        <i class="fa-brands fa-github"></i>
+                                        derafu/backbone
+                                    </a>
+                                </span>
+                                <div class="my-2">
+                                    <img src="https://img.shields.io/github/stars/derafu/backbone" alt="GitHub Repo stars">
+                                    <img src="https://img.shields.io/github/forks/derafu/backbone" alt="GitHub forks">
+                                </div>
+                            </div>
+                        </li>
+                        <a href="index.html" class="list-group-item list-group-item-action ">
+                            README
+                        </a>
+                    </div>
+                    <div class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">Docs</div>
+                            <span class="smal text-muted">Guides & Examples</span>
+                            </div>
+                        </li>
+                        <a href="architecture.html" class="list-group-item list-group-item-action ">
+                            Architecture
+                        </a>
+                        <a href="relationships.html" class="list-group-item list-group-item-action ">
+                            Relationships
+                        </a>
+                        <a href="workflow.html" class="list-group-item list-group-item-action ">
+                            Workflow
+                        </a>
+                        <a href="decision-flow.html" class="list-group-item list-group-item-action ">
+                            Decision Flow
+                        </a>
+                        <a href="component-interaction.html" class="list-group-item list-group-item-action ">
+                            Component Interaction
+                        </a>
+                        <a href="configuration-layers.html" class="list-group-item list-group-item-action ">
+                            Configuration Layers
+                        </a>
+                        <a href="service-lifecycle.html" class="list-group-item list-group-item-action ">
+                            Service Lifecycle
+                        </a>
+                        <a href="design-patterns.html" class="list-group-item list-group-item-action ">
+                            Design Patterns
+                        </a>
+                        <a href="file-structure.html" class="list-group-item list-group-item-action active">
+                            File Structure
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            <div id="footer-container"></div>
+<script src="https://derafu.org/foundation/js/derafu.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/match-braces/prism-match-braces.min.js"></script>
+    </body>
+</html>
