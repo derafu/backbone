@@ -38,7 +38,7 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        $params = $container->get(ParameterBagInterface::class);
+        $params = $container->getParameterBag();
 
         foreach ($container->getDefinitions() as $id => $definition) {
             // Only process classes that exist and are services.
