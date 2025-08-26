@@ -14,6 +14,7 @@ namespace Derafu\ExamplesBackbone;
 
 use Derafu\Backbone\Contract\PackageRegistryInterface;
 use Derafu\Kernel\MicroKernel;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -34,8 +35,10 @@ class Kernel extends MicroKernel
         return $this->getContainer()->get(PackageRegistryInterface::class);
     }
 
-    protected function configure(ContainerConfigurator $configurator): void
-    {
+    protected function configure(
+        ContainerConfigurator $configurator,
+        ContainerBuilder $container
+    ): void {
         $configurator->import(__DIR__ . '/../fixtures/services.yaml');
     }
 }
