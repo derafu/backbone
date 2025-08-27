@@ -143,7 +143,10 @@ abstract class AbstractService implements ServiceInterface
                 }
             }
 
-            throw new LogicException('The service metadata is not defined.');
+            throw new LogicException(sprintf(
+                'The metadata attribute of the service %s is not defined.',
+                $this->getReflectionInstance()->getName()
+            ));
         }
 
         return $this->serviceMetadata;
