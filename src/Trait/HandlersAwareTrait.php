@@ -25,7 +25,7 @@ trait HandlersAwareTrait
      *
      * @var HandlerInterface[]
      */
-    protected array $handlers;
+    protected array $handlers = [];
 
     /**
      * Gets a handler by its name.

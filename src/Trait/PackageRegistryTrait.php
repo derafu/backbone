@@ -26,7 +26,7 @@ trait PackageRegistryTrait
      *
      * @var array<string, PackageInterface>
      */
-    private array $packages;
+    private array $packages = [];
 
     /**
      * Constructor of the class.

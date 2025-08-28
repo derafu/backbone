@@ -25,7 +25,7 @@ trait StrategiesAwareTrait
      *
      * @var StrategyInterface[]
      */
-    protected array $strategies;
+    protected array $strategies = [];
 
     /**
      * Gets a strategy by its name.

@@ -25,7 +25,7 @@ trait JobsAwareTrait
      *
      * @var JobInterface[]
      */
-    protected array $jobs;
+    protected array $jobs = [];
 
     /**
      * Gets a job by its name.
