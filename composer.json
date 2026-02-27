@@ -26,17 +26,17 @@
         }
     },
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "derafu/config": "dev-main",
         "derafu/translation": "dev-main",
-        "symfony/dependency-injection": "^7.3",
-        "symfony/yaml": "^7.3"
+        "symfony/dependency-injection": "^7.4",
+        "symfony/yaml": "^7.4"
     },
     "require-dev": {
         "ext-xdebug": "*",
-        "friendsofphp/php-cs-fixer": "^3.63",
+        "friendsofphp/php-cs-fixer": "^3.94",
         "phpstan/phpstan": "^1.12",
-        "phpunit/phpunit": "^11.4",
+        "phpunit/phpunit": "^11.5",
         "derafu/kernel": "dev-main"
     },
     "scripts": {

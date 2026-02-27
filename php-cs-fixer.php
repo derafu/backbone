@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Derafu: Foundation - Base for Derafu's Projects.
+ * Derafu: Backbone - The Architectural Spine for PHP Libraries.
  *
  * Copyright (c) 2025 Esteban De La Fuente Rubio / Derafu <https://www.derafu.dev>
  * Licensed under the MIT License.
