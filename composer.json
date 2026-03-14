@@ -29,8 +29,8 @@
         "php": "^8.5",
         "derafu/config": "dev-main",
         "derafu/translation": "dev-main",
-        "symfony/dependency-injection": "^7.4",
-        "symfony/yaml": "^7.4"
+        "symfony/dependency-injection": "^8.0",
+        "symfony/yaml": "^8.0"
     },
     "require-dev": {
         "ext-xdebug": "*",
