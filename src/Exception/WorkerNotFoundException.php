@@ -25,8 +25,6 @@ class WorkerNotFoundException extends ServiceNotFoundException
      */
     public static function forWorker(string $name): self
     {
-        $e = parent::forService($name, 'worker');
-        assert($e instanceof self);
-        return $e;
+        return parent::forService($name, 'worker');
     }
 }

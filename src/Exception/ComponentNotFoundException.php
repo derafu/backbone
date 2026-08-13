@@ -25,8 +25,6 @@ class ComponentNotFoundException extends ServiceNotFoundException
      */
     public static function forComponent(string $name): self
     {
-        $e = parent::forService($name, 'component');
-        assert($e instanceof self);
-        return $e;
+        return parent::forService($name, 'component');
     }
 }

@@ -25,8 +25,6 @@ class PackageNotFoundException extends ServiceNotFoundException
      */
     public static function forPackage(string $name): self
     {
-        $e = parent::forService($name, 'package');
-        assert($e instanceof self);
-        return $e;
+        return parent::forService($name, 'package');
     }
 }

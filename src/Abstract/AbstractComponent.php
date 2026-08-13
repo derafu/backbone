@@ -15,13 +15,14 @@ namespace Derafu\Backbone\Abstract;
 use Derafu\Backbone\Contract\ComponentInterface;
 use Derafu\Backbone\Contract\WorkerInterface;
 use Derafu\Backbone\Exception\WorkerNotFoundException;
+use Derafu\Config\Contract\ConfigurableInterface;
 use Derafu\Config\Contract\ConfigurationInterface;
 use Derafu\Config\Trait\ConfigurableTrait;
 
 /**
  * Base class for the components of the application.
  */
-abstract class AbstractComponent extends AbstractService implements ComponentInterface
+abstract class AbstractComponent extends AbstractService implements ComponentInterface, ConfigurableInterface
 {
     use ConfigurableTrait;
 

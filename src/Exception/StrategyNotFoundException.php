@@ -25,8 +25,6 @@ class StrategyNotFoundException extends ServiceNotFoundException
      */
     public static function forStrategy(string $name): self
     {
-        $e = parent::forService($name, 'strategy');
-        assert($e instanceof self);
-        return $e;
+        return parent::forService($name, 'strategy');
     }
 }

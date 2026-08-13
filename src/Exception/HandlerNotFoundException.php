@@ -25,8 +25,6 @@ class HandlerNotFoundException extends ServiceNotFoundException
      */
     public static function forHandler(string $name): self
     {
-        $e = parent::forService($name, 'handler');
-        assert($e instanceof self);
-        return $e;
+        return parent::forService($name, 'handler');
     }
 }

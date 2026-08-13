@@ -15,12 +15,13 @@ namespace Derafu\Backbone\Abstract;
 use Derafu\Backbone\Contract\WorkerInterface;
 use Derafu\Backbone\Trait\HandlersAwareTrait;
 use Derafu\Backbone\Trait\JobsAwareTrait;
+use Derafu\Config\Contract\ConfigurableInterface;
 use Derafu\Config\Trait\ConfigurableTrait;
 
 /**
  * Base class for the workers of the application.
  */
-abstract class AbstractWorker extends AbstractService implements WorkerInterface
+abstract class AbstractWorker extends AbstractService implements WorkerInterface, ConfigurableInterface
 {
     use ConfigurableTrait;
     use JobsAwareTrait;

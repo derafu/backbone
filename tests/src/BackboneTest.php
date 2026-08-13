@@ -12,14 +12,21 @@ declare(strict_types=1);
 
 namespace Derafu\TestsBackbone;
 
-use Derafu\Backbone\Abstract\AbstractWorker;
 use Derafu\ExamplesBackbone\Kernel;
 use Derafu\ExamplesBackbone\PackageRegistry;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(PackageRegistry::class)]
-#[CoversClass(AbstractWorker::class)]
+/**
+ * End-to-end smoke test of the whole Kernel -> PackageRegistry -> Package ->
+ * Component -> Worker -> Job wiring. It necessarily exercises
+ * PackageRegistryTrait, which cannot be declared as a coverage target
+ * because PHPUnit only accepts classes/interfaces/enums (not traits) and the
+ * trait has no real (non-test) consumer in src/ to point at instead. Hence
+ * #[CoversNothing]: this is an integration test, not a unit test of one
+ * class.
+ */
+#[CoversNothing]
 class BackboneTest extends TestCase
 {
     private PackageRegistry $packageRegistry;

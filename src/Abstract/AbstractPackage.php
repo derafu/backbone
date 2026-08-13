@@ -15,13 +15,14 @@ namespace Derafu\Backbone\Abstract;
 use Derafu\Backbone\Contract\ComponentInterface;
 use Derafu\Backbone\Contract\PackageInterface;
 use Derafu\Backbone\Exception\ComponentNotFoundException;
+use Derafu\Config\Contract\ConfigurableInterface;
 use Derafu\Config\Contract\ConfigurationInterface;
 use Derafu\Config\Trait\ConfigurableTrait;
 
 /**
  * Base class for the packages of the application.
  */
-abstract class AbstractPackage extends AbstractService implements PackageInterface
+abstract class AbstractPackage extends AbstractService implements PackageInterface, ConfigurableInterface
 {
     use ConfigurableTrait;
 

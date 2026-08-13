@@ -29,14 +29,14 @@
         "php": "^8.5",
         "derafu/config": "dev-main",
         "derafu/translation": "dev-main",
-        "symfony/dependency-injection": "^8.0",
-        "symfony/yaml": "^8.0"
+        "symfony/dependency-injection": "^8.1",
+        "symfony/yaml": "^8.1"
     },
     "require-dev": {
         "ext-xdebug": "*",
-        "friendsofphp/php-cs-fixer": "^3.94",
-        "phpstan/phpstan": "^1.12",
-        "phpunit/phpunit": "^11.5",
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^13.2",
         "derafu/kernel": "dev-main"
     },
     "scripts": {
