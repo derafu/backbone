@@ -75,20 +75,40 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
 
         if (!empty($tags['service::package'])) {
             $package = $tags['service::package'][0]['name'];
-            $config = $params->get($this->servicesPrefix . $package);
+            $config = $this->getPackageParameter($params, $package);
         } elseif (!empty($tags['service::component'])) {
             $package = $tags['service::component'][0]['package'];
             $component = $tags['service::component'][0]['name'];
-            $config = $params->get($this->servicesPrefix . $package);
+            $config = $this->getPackageParameter($params, $package);
             $config = $config['components'][$component] ?? [];
         } elseif (!empty($tags['service::worker'])) {
             $package = $tags['service::worker'][0]['package'];
             $component = $tags['service::worker'][0]['component'];
             $worker = $tags['service::worker'][0]['name'];
-            $config = $params->get($this->servicesPrefix . $package);
+            $config = $this->getPackageParameter($params, $package);
             $config = $config['components'][$component]['workers'][$worker] ?? [];
         }
 
-        return $config ?? [];
+        return $config;
+    }
+
+    /**
+     * Gets the top-level configuration parameter of a package.
+     *
+     * Not every package necessarily has a matching parameter defined (e.g. a
+     * package with no configuration at all), so this must not fail when the
+     * parameter is missing.
+     *
+     * @param ParameterBagInterface $params
+     * @param string $package
+     * @return array
+     */
+    private function getPackageParameter(
+        ParameterBagInterface $params,
+        string $package
+    ): array {
+        $name = $this->servicesPrefix . $package;
+
+        return $params->has($name) ? $params->get($name) : [];
     }
 }

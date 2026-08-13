@@ -79,10 +79,27 @@ class ServiceConfigurationCompilerPassTest extends TestCase
         $this->assertSame(['timeout' => 30], $calls[0][1][0]);
     }
 
-    public function testAddsNoMethodCallWhenThereIsNoMatchingConfiguration(): void
+    public function testAddsNoMethodCallWhenTheParameterIsDefinedButEmpty(): void
     {
         $container = new ContainerBuilder();
         $container->setParameter('example', []);
+        $definition = $container->register('app.example_package', ExamplePackage::class);
+
+        (new ServiceProcessingCompilerPass())->process($container);
+        (new ServiceConfigurationCompilerPass())->process($container);
+
+        $this->assertFalse($definition->hasMethodCall('setConfiguration'));
+    }
+
+    /**
+     * Regression test: a package with no matching parameter defined at all
+     * (not even an empty one) used to make ParameterBag::get() throw
+     * ParameterNotFoundException, breaking the compilation of the whole
+     * container for every package that has no configuration of its own.
+     */
+    public function testDoesNotFailWhenThePackageHasNoParameterDefinedAtAll(): void
+    {
+        $container = new ContainerBuilder();
         $definition = $container->register('app.example_package', ExamplePackage::class);
 
         (new ServiceProcessingCompilerPass())->process($container);
