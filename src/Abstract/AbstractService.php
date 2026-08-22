@@ -75,6 +75,14 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getDescription(): ?string
+    {
+        return $this->getServiceMetadata()->getDescription();
+    }
+
+    /**
      * Resolves the service options from the options schema.
      *
      * @param array|ArrayObject|VaultInterface $options

@@ -33,4 +33,11 @@ interface ServiceInterface extends Stringable, OptionsAwareInterface
      * @return string
      */
     public function getName(): string;
+
+    /**
+     * Gets the description of the class, if any.
+     *
+     * @return string|null
+     */
+    public function getDescription(): ?string;
 }
