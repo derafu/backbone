@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Derafu\Backbone\Abstract;
 
 use Derafu\Backbone\Contract\ServiceMetadataInterface;
-use LogicException;
+use Derafu\Translation\Exception\Core\TranslatableLogicException as LogicException;
 
 /**
  * Abstract class for the metadata of the services.

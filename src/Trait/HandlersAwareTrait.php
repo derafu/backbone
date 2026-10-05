@@ -36,12 +36,12 @@ trait HandlersAwareTrait
     public function getHandler(string $handler): HandlerInterface
     {
         if (!isset($this->handlers[$handler])) {
-            throw new HandlerException(sprintf(
-                'Handler %s not found in service %s (%s).',
-                $handler,
-                $this->getName(),
-                $this->getId(),
-            ));
+            throw new HandlerException([
+                'Handler {handler} not found in service {service} ({id}).',
+                'handler' => $handler,
+                'service' => $this->getName(),
+                'id' => (string) $this->getId(),
+            ]);
         }
 
         return $this->handlers[$handler];

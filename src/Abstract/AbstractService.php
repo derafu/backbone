@@ -20,7 +20,7 @@ use Derafu\Config\Contract\OptionsInterface;
 use Derafu\Config\Options;
 use Derafu\Config\Trait\OptionsAwareTrait;
 use Derafu\Container\Contract\VaultInterface;
-use LogicException;
+use Derafu\Translation\Exception\Core\TranslatableLogicException as LogicException;
 use ReflectionClass;
 
 /**
@@ -151,10 +151,10 @@ abstract class AbstractService implements ServiceInterface
                 }
             }
 
-            throw new LogicException(sprintf(
-                'The metadata attribute of the service %s is not defined.',
-                $this->getReflectionInstance()->getName()
-            ));
+            throw new LogicException([
+                'The metadata attribute of the service {service} is not defined.',
+                'service' => $this->getReflectionInstance()->getName(),
+            ]);
         }
 
         return $this->serviceMetadata;

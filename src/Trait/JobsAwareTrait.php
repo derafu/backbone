@@ -36,12 +36,12 @@ trait JobsAwareTrait
     public function getJob(string $job): JobInterface
     {
         if (!isset($this->jobs[$job])) {
-            throw new JobException(sprintf(
-                'Job %s not found in service %s (%s).',
-                $job,
-                $this->getName(),
-                $this->getId(),
-            ));
+            throw new JobException([
+                'Job {job} not found in service {service} ({id}).',
+                'job' => $job,
+                'service' => $this->getName(),
+                'id' => (string) $this->getId(),
+            ]);
         }
 
         return $this->jobs[$job];

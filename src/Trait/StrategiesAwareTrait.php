@@ -46,12 +46,12 @@ trait StrategiesAwareTrait
             }
         }
 
-        throw new StrategyException(sprintf(
-            'Strategy %s not found in service %s (%s).',
-            $strategy,
-            $this->getName(),
-            $this->getId(),
-        ));
+        throw new StrategyException([
+            'Strategy {strategy} not found in service {service} ({id}).',
+            'strategy' => $strategy,
+            'service' => $this->getName(),
+            'id' => (string) $this->getId(),
+        ]);
     }
 
     /**
