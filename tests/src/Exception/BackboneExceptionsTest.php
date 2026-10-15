@@ -18,7 +18,8 @@ use Derafu\Backbone\Abstract\AbstractServiceMetadata;
 use Derafu\Backbone\Enum\ServiceType;
 use Derafu\Backbone\Exception\HandlerException;
 use Derafu\Backbone\Exception\JobException;
-use Derafu\Backbone\Exception\StrategyException;
+use Derafu\Backbone\Exception\ServiceNotFoundException;
+use Derafu\Backbone\Exception\StrategyNotFoundException;
 use Derafu\Backbone\Trait\HandlersAwareTrait;
 use Derafu\Backbone\Trait\JobsAwareTrait;
 use Derafu\Backbone\Trait\StrategiesAwareTrait;
@@ -41,7 +42,8 @@ use Throwable;
 #[CoversClass(AbstractServiceMetadata::class)]
 #[UsesClass(HandlerException::class)]
 #[UsesClass(JobException::class)]
-#[UsesClass(StrategyException::class)]
+#[UsesClass(StrategyNotFoundException::class)]
+#[UsesClass(ServiceNotFoundException::class)]
 #[UsesTrait(HandlersAwareTrait::class)]
 #[UsesTrait(JobsAwareTrait::class)]
 #[UsesTrait(StrategiesAwareTrait::class)]
@@ -60,7 +62,7 @@ final class BackboneExceptionsTest extends TestCase
             ],
             'strategy that is not in the service' => [
                 fn () => (new ServiceWithTraits())->getStrategy('mail'),
-                StrategyException::class,
+                StrategyNotFoundException::class,
                 'Strategy mail not found in service Fixture (1000).',
             ],
             'job that is not in the service' => [

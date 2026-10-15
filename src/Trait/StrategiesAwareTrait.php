@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Derafu\Backbone\Trait;
 
 use Derafu\Backbone\Contract\StrategyInterface;
-use Derafu\Backbone\Exception\StrategyException;
+use Derafu\Backbone\Exception\StrategyNotFoundException;
 
 /**
  * Trait for the services that use strategies.
@@ -46,7 +46,7 @@ trait StrategiesAwareTrait
             }
         }
 
-        throw new StrategyException([
+        throw new StrategyNotFoundException([
             'Strategy {strategy} not found in service {service} ({id}).',
             'strategy' => $strategy,
             'service' => $this->getName(),
