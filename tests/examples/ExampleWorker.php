@@ -19,6 +19,9 @@ use Derafu\Backbone\Contract\WorkerInterface;
 #[Worker(name: 'example', component: 'example', package: 'example')]
 class ExampleWorker extends AbstractWorker implements WorkerInterface
 {
+    /**
+     * @param iterable<array-key, \Derafu\Backbone\Contract\JobInterface> $jobs
+     */
     public function __construct(
         iterable $jobs
     ) {

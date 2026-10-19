@@ -26,7 +26,7 @@ class ServiceNotFoundException extends TranslatableLogicException
      * is guaranteed safe: no subclass (current or future) can override it
      * with an incompatible signature.
      *
-     * @param string|array|TranslatableInterface $message
+     * @param string|array<int|string, mixed>|TranslatableInterface $message
      * @param int $code
      * @param Throwable|null $previous
      */

@@ -64,10 +64,10 @@ final class Operation
      * @param string|null $name Overrides the PHPDoc summary, if given.
      * @param string|null $description Overrides the PHPDoc description, if
      * given.
-     * @param array $parameters Per-parameter overrides/additions, keyed by
+     * @param array<array-key, mixed> $parameters Per-parameter overrides/additions, keyed by
      * parameter name: `['example' => ..., 'type' => ..., 'description' =>
      * ...]`, all optional.
-     * @param array $results Documented outcomes, keyed however the
+     * @param array<array-key, mixed> $results Documented outcomes, keyed however the
      * consumer identifies each one.
      */
     public function __construct(
@@ -79,7 +79,7 @@ final class Operation
     }
 
     /**
-     * {@inheritDoc}
+     * @return array{name: string|null, description: string|null, parameters: array<array-key, mixed>, results: array<array-key, mixed>}
      */
     public function toArray(): array
     {

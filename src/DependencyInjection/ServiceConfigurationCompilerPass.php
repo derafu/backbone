@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Derafu\Backbone\DependencyInjection;
 
+use Derafu\Backbone\Exception\ServiceConfigurationException;
 use Derafu\Config\Contract\ConfigurableInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,7 +65,7 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
      *
      * @param Definition $definition
      * @param ParameterBagInterface $params
-     * @return array Configuration if it exists, otherwise an empty array.
+     * @return array<array-key, mixed> Configuration if it exists, otherwise an empty array.
      */
     private function resolveConfiguration(
         Definition $definition,
@@ -80,13 +81,21 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
             $package = $tags['service::component'][0]['package'];
             $component = $tags['service::component'][0]['name'];
             $config = $this->getPackageParameter($params, $package);
-            $config = $config['components'][$component] ?? [];
+            $config = $this->getNestedConfiguration(
+                $config,
+                ['components', $component],
+                $this->servicesPrefix . $package
+            );
         } elseif (!empty($tags['service::worker'])) {
             $package = $tags['service::worker'][0]['package'];
             $component = $tags['service::worker'][0]['component'];
             $worker = $tags['service::worker'][0]['name'];
             $config = $this->getPackageParameter($params, $package);
-            $config = $config['components'][$component]['workers'][$worker] ?? [];
+            $config = $this->getNestedConfiguration(
+                $config,
+                ['components', $component, 'workers', $worker],
+                $this->servicesPrefix . $package
+            );
         }
 
         return $config;
@@ -101,7 +110,7 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
      *
      * @param ParameterBagInterface $params
      * @param string $package
-     * @return array
+     * @return array<array-key, mixed>
      */
     private function getPackageParameter(
         ParameterBagInterface $params,
@@ -109,6 +118,56 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
     ): array {
         $name = $this->servicesPrefix . $package;
 
-        return $params->has($name) ? $params->get($name) : [];
+        return $params->has($name)
+            ? $this->requireConfigurationArray($params->get($name), $name)
+            : [];
+    }
+
+    /**
+     * Resolves a configuration path, treating missing or null sections as empty.
+     *
+     * @param array<array-key, mixed> $configuration
+     * @param list<string> $keys
+     * @param string $path The full parameter path for error reporting.
+     * @return array<array-key, mixed>
+     * @throws ServiceConfigurationException If a section is not an array.
+     */
+    private function getNestedConfiguration(
+        array $configuration,
+        array $keys,
+        string $path
+    ): array {
+        foreach ($keys as $key) {
+            $path .= '.' . $key;
+            $configuration = $this->requireConfigurationArray(
+                $configuration[$key] ?? [],
+                $path
+            );
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Requires an array at a configuration path without converting its values.
+     *
+     * @param mixed $configuration
+     * @param string $path
+     * @return array<array-key, mixed>
+     * @throws ServiceConfigurationException If the value is not an array.
+     */
+    private function requireConfigurationArray(
+        mixed $configuration,
+        string $path
+    ): array {
+        if (!is_array($configuration)) {
+            throw new ServiceConfigurationException([
+                'The configuration at {path} must be an array; {type} given.',
+                'path' => $path,
+                'type' => get_debug_type($configuration),
+            ]);
+        }
+
+        return $configuration;
     }
 }

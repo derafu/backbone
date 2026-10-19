@@ -19,7 +19,6 @@ use Derafu\Backbone\Attribute\Package;
 use Derafu\Backbone\Attribute\Strategy;
 use Derafu\Backbone\Attribute\Worker;
 use Derafu\Backbone\Contract\ServiceInterface;
-use Derafu\Backbone\Contract\ServiceMetadataInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +32,7 @@ final class ServiceProcessingCompilerPass implements CompilerPassInterface
     /**
      * Attribute classes to process.
      *
-     * @var array<class-string<ServiceMetadataInterface>>
+     * @var array<class-string<Package|Component|Worker|Job|Handler|Strategy>>
      */
     private const ATTRIBUTE_CLASSES = [
         Package::class,
@@ -117,8 +116,8 @@ final class ServiceProcessingCompilerPass implements CompilerPassInterface
     /**
      * Processes an attribute of the specified type.
      *
-     * @param ReflectionClass $reflection The reflection of the class.
-     * @param class-string $attributeClass The class of the attribute.
+     * @param ReflectionClass<ServiceInterface> $reflection The reflection of the class.
+     * @param class-string<Package|Component|Worker|Job|Handler|Strategy> $attributeClass The class of the attribute.
      * @param string $id The id of the service.
      * @param Definition $definition The definition of the service.
      * @param ContainerBuilder $container The container builder.

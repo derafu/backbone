@@ -15,6 +15,7 @@ namespace Derafu\Backbone\Abstract;
 use Derafu\Backbone\Contract\ComponentInterface;
 use Derafu\Backbone\Contract\PackageInterface;
 use Derafu\Backbone\Exception\ComponentNotFoundException;
+use Derafu\Backbone\Exception\ServiceConfigurationException;
 use Derafu\Config\Contract\ConfigurableInterface;
 use Derafu\Config\Contract\ConfigurationInterface;
 use Derafu\Config\Trait\ConfigurableTrait;
@@ -47,12 +48,22 @@ abstract class AbstractPackage extends AbstractService implements PackageInterfa
      * Returns the configuration of a component of the package.
      *
      * @param string $name The name of the component.
-     * @return array|ConfigurationInterface
+     * @return array<array-key, mixed>|ConfigurationInterface
+     * @throws ServiceConfigurationException If the configuration has an incompatible type.
      */
     protected function getComponentConfiguration(
         string $name
     ): array|ConfigurationInterface {
-        $config = $this->getConfiguration()->get('components.' . $name);
+        $path = 'components.' . $name;
+        $config = $this->getConfiguration()->get($path);
+
+        if ($config !== null && !is_array($config) && !$config instanceof ConfigurationInterface) {
+            throw new ServiceConfigurationException([
+                'The configuration at {path} must be an array or implement ConfigurationInterface; {type} given.',
+                'path' => $path,
+                'type' => get_debug_type($config),
+            ]);
+        }
 
         return $config ?? [];
     }

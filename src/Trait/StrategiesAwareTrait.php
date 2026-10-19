@@ -67,7 +67,7 @@ trait StrategiesAwareTrait
     /**
      * Sets the strategies.
      *
-     * @param array|iterable $strategies
+     * @param iterable<array-key, StrategyInterface> $strategies
      * @return static
      */
     public function setStrategies(iterable $strategies): static

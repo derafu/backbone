@@ -38,7 +38,7 @@ interface HandlersAwareInterface
     /**
      * Sets the handlers.
      *
-     * @param array<string, HandlerInterface>|iterable $handlers The list of handlers.
+     * @param iterable<array-key, HandlerInterface> $handlers The list of handlers.
      * @return static The instance.
      */
     public function setHandlers(iterable $handlers): static;

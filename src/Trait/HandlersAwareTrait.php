@@ -60,7 +60,7 @@ trait HandlersAwareTrait
     /**
      * Sets the handlers.
      *
-     * @param array|iterable $handlers
+     * @param iterable<array-key, HandlerInterface> $handlers
      * @return static
      */
     public function setHandlers(iterable $handlers): static

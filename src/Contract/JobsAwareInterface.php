@@ -38,7 +38,7 @@ interface JobsAwareInterface
     /**
      * Sets the jobs.
      *
-     * @param array<string, JobInterface>|iterable $jobs The list of jobs.
+     * @param iterable<array-key, JobInterface> $jobs The list of jobs.
      * @return static The instance.
      */
     public function setJobs(iterable $jobs): static;

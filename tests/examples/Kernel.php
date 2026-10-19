@@ -32,6 +32,7 @@ class Kernel extends MicroKernel
 
     public function getPackageRegistry(): PackageRegistry
     {
+        /** @var PackageRegistry */
         return $this->getContainer()->get(PackageRegistryInterface::class);
     }
 

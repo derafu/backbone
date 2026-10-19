@@ -15,7 +15,9 @@ namespace Derafu\Backbone\Abstract;
 use ArrayObject;
 use Derafu\Backbone\Contract\ServiceInterface;
 use Derafu\Backbone\Contract\ServiceMetadataInterface;
+use Derafu\Backbone\Exception\ServiceConfigurationException;
 use Derafu\Config\Contract\ConfigurableInterface;
+use Derafu\Config\Contract\ConfigurationInterface;
 use Derafu\Config\Contract\OptionsInterface;
 use Derafu\Config\Options;
 use Derafu\Config\Trait\OptionsAwareTrait;
@@ -33,7 +35,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Reflection instance of the service.
      *
-     * @var ReflectionClass
+     * @var ReflectionClass<$this>
      */
     protected ReflectionClass $reflectionInstance;
 
@@ -85,8 +87,9 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Resolves the service options from the options schema.
      *
-     * @param array|ArrayObject|VaultInterface $options
+     * @param array<array-key, mixed>|ArrayObject<array-key, mixed>|VaultInterface $options
      * @return OptionsInterface
+     * @throws ServiceConfigurationException If the configured options have an incompatible type.
      */
     public function resolveOptions(
         array|ArrayObject|VaultInterface $options = []
@@ -106,7 +109,18 @@ abstract class AbstractService implements ServiceInterface
         // passed.
         if ($this instanceof ConfigurableInterface) {
             $optionsFromConfiguration = $this->getConfiguration()->get('options');
-            if ($optionsFromConfiguration) {
+            if ($optionsFromConfiguration instanceof ConfigurationInterface) {
+                $optionsFromConfiguration = $optionsFromConfiguration->all();
+            }
+            if ($optionsFromConfiguration !== null) {
+                if (!is_array($optionsFromConfiguration)) {
+                    throw new ServiceConfigurationException([
+                        'The configuration at {path} must be an array or implement ConfigurationInterface; {type} given.',
+                        'path' => 'options',
+                        'type' => get_debug_type($optionsFromConfiguration),
+                    ]);
+                }
+
                 $options = array_replace_recursive(
                     $optionsFromConfiguration,
                     $options
@@ -122,7 +136,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Gets the reflection class of the service.
      *
-     * @return ReflectionClass
+     * @return ReflectionClass<$this>
      */
     protected function getReflectionInstance(): ReflectionClass
     {

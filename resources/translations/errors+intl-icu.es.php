@@ -11,6 +11,10 @@ declare(strict_types=1);
  */
 
 return [
+    'The configuration at {path} must be an array or implement ConfigurationInterface; {type} given.' =>
+        'La configuración en {path} debe ser un array o implementar ConfigurationInterface; se recibió {type}.',
+    'The configuration at {path} must be an array; {type} given.' =>
+        'La configuración en {path} debe ser un array; se recibió {type}.',
     'The {type} {name} does not exist in the application.' =>
         'No existe en la aplicación: {type} {name}.',
     'Handler {handler} not found in service {service} ({id}).' =>

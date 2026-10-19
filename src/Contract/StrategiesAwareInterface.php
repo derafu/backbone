@@ -38,7 +38,7 @@ interface StrategiesAwareInterface
     /**
      * Sets the strategies.
      *
-     * @param array<string, StrategyInterface>|iterable $strategies The list of strategies.
+     * @param iterable<array-key, StrategyInterface> $strategies The list of strategies.
      * @return static The instance.
      */
     public function setStrategies(iterable $strategies): static;

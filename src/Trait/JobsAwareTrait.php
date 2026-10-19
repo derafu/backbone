@@ -60,7 +60,7 @@ trait JobsAwareTrait
     /**
      * Sets the jobs.
      *
-     * @param array|iterable $jobs
+     * @param iterable<array-key, JobInterface> $jobs
      * @return static
      */
     public function setJobs(iterable $jobs): static
