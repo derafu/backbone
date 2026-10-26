@@ -93,7 +93,7 @@ final class NestedServiceConfigurationTest extends TestCase
         $reader = $this->createReader($kind);
         foreach ([[], ['enabled' => false, 'timeout' => 30]] as $value) {
             $configuration = $this->createMock(ConfigurationInterface::class);
-            $configuration->expects($this->once())->method('validate');
+            $configuration->expects($this->never())->method('validate');
             $configuration->expects($this->once())->method('get')->with($path)->willReturn($value);
             $reader->setConfiguration($configuration);
 
@@ -107,7 +107,7 @@ final class NestedServiceConfigurationTest extends TestCase
         $reader = $this->createReader($kind);
         $value = new Configuration(['enabled' => false]);
         $configuration = $this->createMock(ConfigurationInterface::class);
-        $configuration->expects($this->once())->method('validate');
+        $configuration->expects($this->never())->method('validate');
         $configuration->expects($this->once())->method('get')->with($path)->willReturn($value);
         $reader->setConfiguration($configuration);
 
@@ -134,7 +134,7 @@ final class NestedServiceConfigurationTest extends TestCase
     ): void {
         $reader = $this->createReader($kind);
         $configuration = $this->createMock(ConfigurationInterface::class);
-        $configuration->expects($this->once())->method('validate');
+        $configuration->expects($this->never())->method('validate');
         $configuration->expects($this->once())->method('get')->with($path)->willReturn($value);
         $reader->setConfiguration($configuration);
 

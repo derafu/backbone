@@ -141,7 +141,7 @@ final class ServiceOptionsTest extends TestCase
     public function testAcceptsArraysReturnedByOtherConfigurationImplementations(array $defaults): void
     {
         $configuration = $this->createMock(ConfigurationInterface::class);
-        $configuration->expects($this->once())->method('validate');
+        $configuration->expects($this->never())->method('validate');
         $configuration->expects($this->once())->method('get')->with('options')->willReturn($defaults);
         $service = new ConfigurableOptionsTestService();
         $service->setConfiguration($configuration);
@@ -185,7 +185,7 @@ final class ServiceOptionsTest extends TestCase
     public function testInvalidConfiguredOptionsAreRejectedWithATranslatableError(mixed $value): void
     {
         $configuration = $this->createMock(ConfigurationInterface::class);
-        $configuration->expects($this->once())->method('validate');
+        $configuration->expects($this->never())->method('validate');
         $configuration->expects($this->once())->method('get')->with('options')->willReturn($value);
         $service = new ConfigurableOptionsTestService();
         $service->setConfiguration($configuration);
