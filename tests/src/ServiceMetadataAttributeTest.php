@@ -40,7 +40,7 @@ class ServiceMetadataAttributeTest extends TestCase
     {
         $package = new Package(name: 'billing', description: 'Billing package.');
 
-        $this->assertSame('billing', $package->id);
+        $this->assertSame('billing', $package->getId());
         $this->assertNull($package->getParentId());
         $this->assertSame(ServiceType::PACKAGE, $package->getType());
         $this->assertSame('package', $package->getGroupId());
@@ -57,7 +57,7 @@ class ServiceMetadataAttributeTest extends TestCase
     {
         $component = new Component(name: 'document', package: 'billing');
 
-        $this->assertSame('billing.document', $component->id);
+        $this->assertSame('billing.document', $component->getId());
         $this->assertSame('billing', $component->getParentId());
         $this->assertSame(ServiceType::COMPONENT, $component->getType());
         $this->assertSame('billing#component', $component->getGroupId());
@@ -75,7 +75,7 @@ class ServiceMetadataAttributeTest extends TestCase
     {
         $worker = new Worker(name: 'builder', component: 'document', package: 'billing');
 
-        $this->assertSame('billing.document.builder', $worker->id);
+        $this->assertSame('billing.document.builder', $worker->getId());
         $this->assertSame('billing.document', $worker->getParentId());
         $this->assertSame(ServiceType::WORKER, $worker->getType());
         $this->assertSame('billing.document#worker', $worker->getGroupId());
@@ -91,7 +91,7 @@ class ServiceMetadataAttributeTest extends TestCase
             package: 'billing'
         );
 
-        $this->assertSame('billing.document.builder.job:build', $job->id);
+        $this->assertSame('billing.document.builder.job:build', $job->getId());
         $this->assertSame('billing.document.builder', $job->getParentId());
         $this->assertSame(ServiceType::JOB, $job->getType());
         $this->assertSame('billing.document.builder#job', $job->getGroupId());
@@ -116,7 +116,7 @@ class ServiceMetadataAttributeTest extends TestCase
             package: 'billing'
         );
 
-        $this->assertSame('billing.document.builder.handler:default', $handler->id);
+        $this->assertSame('billing.document.builder.handler:default', $handler->getId());
         $this->assertSame(ServiceType::HANDLER, $handler->getType());
         $this->assertSame('service::handler', $handler->getCategoryId());
     }
@@ -130,7 +130,7 @@ class ServiceMetadataAttributeTest extends TestCase
             package: 'billing'
         );
 
-        $this->assertSame('billing.document.builder.strategy:xml', $strategy->id);
+        $this->assertSame('billing.document.builder.strategy:xml', $strategy->getId());
         $this->assertSame(ServiceType::STRATEGY, $strategy->getType());
         $this->assertSame('service::strategy', $strategy->getCategoryId());
     }

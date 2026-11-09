@@ -28,7 +28,7 @@ final class Worker extends AbstractServiceMetadata implements ServiceMetadataInt
      *
      * @var string
      */
-    public readonly string $id;
+    protected readonly string $id;
 
     /**
      * Constructor.
@@ -39,10 +39,10 @@ final class Worker extends AbstractServiceMetadata implements ServiceMetadataInt
      * @param string|null $description The description of the worker.
      */
     public function __construct(
-        public readonly string $name,
-        public readonly string $component,
-        public readonly string $package,
-        public readonly ?string $description = null
+        protected readonly string $name,
+        protected readonly string $component,
+        protected readonly string $package,
+        protected readonly ?string $description = null
     ) {
         $this->id = $this->getParentId() . '.' . $this->name;
     }

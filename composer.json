@@ -27,8 +27,10 @@
     },
     "require": {
         "php": "^8.5",
+        "derafu/array": "dev-main",
         "derafu/config": "dev-main",
         "derafu/translation": "dev-main",
+        "derafu/value": "dev-main",
         "symfony/dependency-injection": "^8.1",
         "symfony/yaml": "^8.1"
     },

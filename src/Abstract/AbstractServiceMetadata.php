@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Derafu\Backbone\Abstract;
 
 use Derafu\Backbone\Contract\ServiceMetadataInterface;
-use Derafu\Translation\Exception\Core\TranslatableLogicException as LogicException;
 
 /**
  * Abstract class for the metadata of the services.
@@ -21,11 +20,26 @@ use Derafu\Translation\Exception\Core\TranslatableLogicException as LogicExcepti
 abstract class AbstractServiceMetadata implements ServiceMetadataInterface
 {
     /**
+     * The ID of the service.
+     */
+    abstract protected string $id { get; }
+
+    /**
+     * The name of the service.
+     */
+    abstract protected string $name { get; }
+
+    /**
+     * The description of the service.
+     */
+    abstract protected ?string $description { get; }
+
+    /**
      * {@inheritDoc}
      */
     public function getId(): string
     {
-        return $this->id ?? throw new LogicException('The id property is required');
+        return $this->id;
     }
 
     /**
@@ -33,7 +47,7 @@ abstract class AbstractServiceMetadata implements ServiceMetadataInterface
      */
     public function getName(): string
     {
-        return $this->name ?? throw new LogicException('The name property is required');
+        return $this->name;
     }
 
     /**
@@ -41,7 +55,7 @@ abstract class AbstractServiceMetadata implements ServiceMetadataInterface
      */
     public function getDescription(): ?string
     {
-        return $this->description ?? null;
+        return $this->description;
     }
 
     /**

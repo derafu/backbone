@@ -28,7 +28,7 @@ final class Package extends AbstractServiceMetadata implements ServiceMetadataIn
      *
      * @var string
      */
-    public readonly string $id;
+    protected readonly string $id;
 
     /**
      * Constructor.
@@ -37,8 +37,8 @@ final class Package extends AbstractServiceMetadata implements ServiceMetadataIn
      * @param string|null $description The description of the package.
      */
     public function __construct(
-        public readonly string $name,
-        public readonly ?string $description = null
+        protected readonly string $name,
+        protected readonly ?string $description = null
     ) {
         $this->id = $this->name;
     }

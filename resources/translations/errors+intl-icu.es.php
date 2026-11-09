@@ -13,8 +13,6 @@ declare(strict_types=1);
 return [
     'The configuration at {path} must be an array or implement ConfigurationInterface; {type} given.' =>
         'La configuración en {path} debe ser un array o implementar ConfigurationInterface; se recibió {type}.',
-    'The configuration at {path} must be an array; {type} given.' =>
-        'La configuración en {path} debe ser un array; se recibió {type}.',
     'The {type} {name} does not exist in the application.' =>
         'No existe en la aplicación: {type} {name}.',
     'Handler {handler} not found in service {service} ({id}).' =>
@@ -25,8 +23,4 @@ return [
         'El job {job} no se encontró en el servicio {service} ({id}).',
     'The metadata attribute of the service {service} is not defined.' =>
         'El atributo de metadatos del servicio {service} no está definido.',
-    'The id property is required' =>
-        'La propiedad id es obligatoria',
-    'The name property is required' =>
-        'La propiedad name es obligatoria',
 ];

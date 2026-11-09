@@ -53,7 +53,7 @@ class ServiceConfigurationCompilerPassTest extends TestCase
 
         $this->assertTrue($definition->hasMethodCall('setConfiguration'));
         $calls = $definition->getMethodCalls();
-        $this->assertSame(['enabled' => true], $calls[0][1][0]);
+        $this->assertSame(['setConfiguration', [['enabled' => true]]], $calls[0]);
     }
 
     public function testResolvesConfigurationForAWorkerNestedInsideItsComponent(): void
@@ -76,7 +76,7 @@ class ServiceConfigurationCompilerPassTest extends TestCase
 
         $this->assertTrue($definition->hasMethodCall('setConfiguration'));
         $calls = $definition->getMethodCalls();
-        $this->assertSame(['timeout' => 30], $calls[0][1][0]);
+        $this->assertSame(['setConfiguration', [['timeout' => 30]]], $calls[0]);
     }
 
     public function testAddsNoMethodCallWhenTheParameterIsDefinedButEmpty(): void

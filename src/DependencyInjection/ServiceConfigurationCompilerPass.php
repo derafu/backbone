@@ -12,7 +12,8 @@ declare(strict_types=1);
 
 namespace Derafu\Backbone\DependencyInjection;
 
-use Derafu\Backbone\Exception\ServiceConfigurationException;
+use Derafu\Array\ArrayReader;
+use Derafu\Array\Exception\ArrayException;
 use Derafu\Config\Contract\ConfigurableInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -72,24 +73,38 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
         ParameterBagInterface $params
     ): array {
         $config = [];
-        $tags = $definition->getTags();
 
-        if (!empty($tags['service::package'])) {
-            $package = $tags['service::package'][0]['name'];
+        if ($definition->hasTag('service::package')) {
+            $tag = ArrayReader::fromValue(
+                $definition->getTag('service::package')[0] ?? null,
+                'tags',
+                'service::package'
+            );
+            $package = $tag->requireString('name');
             $config = $this->getPackageParameter($params, $package);
-        } elseif (!empty($tags['service::component'])) {
-            $package = $tags['service::component'][0]['package'];
-            $component = $tags['service::component'][0]['name'];
+        } elseif ($definition->hasTag('service::component')) {
+            $tag = ArrayReader::fromValue(
+                $definition->getTag('service::component')[0] ?? null,
+                'tags',
+                'service::component'
+            );
+            $package = $tag->requireString('package');
+            $component = $tag->requireString('name');
             $config = $this->getPackageParameter($params, $package);
             $config = $this->getNestedConfiguration(
                 $config,
                 ['components', $component],
                 $this->servicesPrefix . $package
             );
-        } elseif (!empty($tags['service::worker'])) {
-            $package = $tags['service::worker'][0]['package'];
-            $component = $tags['service::worker'][0]['component'];
-            $worker = $tags['service::worker'][0]['name'];
+        } elseif ($definition->hasTag('service::worker')) {
+            $tag = ArrayReader::fromValue(
+                $definition->getTag('service::worker')[0] ?? null,
+                'tags',
+                'service::worker'
+            );
+            $package = $tag->requireString('package');
+            $component = $tag->requireString('component');
+            $worker = $tag->requireString('name');
             $config = $this->getPackageParameter($params, $package);
             $config = $this->getNestedConfiguration(
                 $config,
@@ -119,7 +134,7 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
         $name = $this->servicesPrefix . $package;
 
         return $params->has($name)
-            ? $this->requireConfigurationArray($params->get($name), $name)
+            ? ArrayReader::fromValue($params->get($name), 'parameters', $name)->toArray()
             : [];
     }
 
@@ -130,7 +145,7 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
      * @param list<string> $keys
      * @param string $path The full parameter path for error reporting.
      * @return array<array-key, mixed>
-     * @throws ServiceConfigurationException If a section is not an array.
+     * @throws ArrayException If a section is not an array.
      */
     private function getNestedConfiguration(
         array $configuration,
@@ -139,33 +154,11 @@ final class ServiceConfigurationCompilerPass implements CompilerPassInterface
     ): array {
         foreach ($keys as $key) {
             $path .= '.' . $key;
-            $configuration = $this->requireConfigurationArray(
+            $configuration = ArrayReader::fromValue(
                 $configuration[$key] ?? [],
+                'parameters',
                 $path
-            );
-        }
-
-        return $configuration;
-    }
-
-    /**
-     * Requires an array at a configuration path without converting its values.
-     *
-     * @param mixed $configuration
-     * @param string $path
-     * @return array<array-key, mixed>
-     * @throws ServiceConfigurationException If the value is not an array.
-     */
-    private function requireConfigurationArray(
-        mixed $configuration,
-        string $path
-    ): array {
-        if (!is_array($configuration)) {
-            throw new ServiceConfigurationException([
-                'The configuration at {path} must be an array; {type} given.',
-                'path' => $path,
-                'type' => get_debug_type($configuration),
-            ]);
+            )->toArray();
         }
 
         return $configuration;

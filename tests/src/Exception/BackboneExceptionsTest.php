@@ -14,8 +14,6 @@ namespace Derafu\TestsBackbone\Exception;
 
 use Closure;
 use Derafu\Backbone\Abstract\AbstractService;
-use Derafu\Backbone\Abstract\AbstractServiceMetadata;
-use Derafu\Backbone\Enum\ServiceType;
 use Derafu\Backbone\Exception\HandlerException;
 use Derafu\Backbone\Exception\JobException;
 use Derafu\Backbone\Exception\ServiceNotFoundException;
@@ -39,7 +37,6 @@ use Throwable;
  * traits), so what they do is covered through the classes that use them here.
  */
 #[CoversClass(AbstractService::class)]
-#[CoversClass(AbstractServiceMetadata::class)]
 #[UsesClass(HandlerException::class)]
 #[UsesClass(JobException::class)]
 #[UsesClass(StrategyNotFoundException::class)]
@@ -74,16 +71,6 @@ final class BackboneExceptionsTest extends TestCase
                 fn () => (new ServiceWithoutMetadata())->getName(),
                 LogicException::class,
                 'The metadata attribute of the service ' . ServiceWithoutMetadata::class . ' is not defined.',
-            ],
-            'metadata without id' => [
-                fn () => (new MetadataWithoutProperties())->getId(),
-                LogicException::class,
-                'The id property is required',
-            ],
-            'metadata without name' => [
-                fn () => (new MetadataWithoutProperties())->getName(),
-                LogicException::class,
-                'The name property is required',
             ],
         ];
     }
@@ -131,22 +118,4 @@ final class ServiceWithTraits
 
 final class ServiceWithoutMetadata extends AbstractService
 {
-}
-
-final class MetadataWithoutProperties extends AbstractServiceMetadata
-{
-    public function getType(): ServiceType
-    {
-        return ServiceType::JOB;
-    }
-
-    public function getParentId(): ?string
-    {
-        return null;
-    }
-
-    public function toArray(): array
-    {
-        return [];
-    }
 }

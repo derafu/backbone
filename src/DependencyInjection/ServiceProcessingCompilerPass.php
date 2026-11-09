@@ -155,7 +155,7 @@ final class ServiceProcessingCompilerPass implements CompilerPassInterface
         }
 
         // Create alias.
-        $alias = $this->servicesPrefix . $attribute->id;
+        $alias = $this->servicesPrefix . $attribute->getId();
         $aliasDefinition = $container->setAlias($alias, $id);
 
         // Make Package aliases public and private otherwise.

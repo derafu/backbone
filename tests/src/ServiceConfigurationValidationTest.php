@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Derafu\TestsBackbone;
 
+use Derafu\Array\Exception\TypeMismatchException;
 use Derafu\Backbone\Abstract\AbstractServiceMetadata;
 use Derafu\Backbone\Attribute\Component;
 use Derafu\Backbone\Attribute\Worker;
 use Derafu\Backbone\DependencyInjection\ServiceConfigurationCompilerPass;
 use Derafu\Backbone\DependencyInjection\ServiceProcessingCompilerPass;
-use Derafu\Backbone\Exception\ServiceConfigurationException;
 use Derafu\ExamplesBackbone\ExampleComponent;
 use Derafu\ExamplesBackbone\ExamplePackage;
 use Derafu\ExamplesBackbone\ExampleWorker;
@@ -29,14 +29,11 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Translation\Loader\PhpFileLoader;
-use Symfony\Component\Translation\Translator;
 
 /**
  * Configuration paths preserve valid values and reject incompatible sections.
  */
 #[CoversClass(ServiceConfigurationCompilerPass::class)]
-#[CoversClass(ServiceConfigurationException::class)]
 #[UsesClass(ServiceProcessingCompilerPass::class)]
 #[UsesClass(Component::class)]
 #[UsesClass(Worker::class)]
@@ -137,30 +134,19 @@ final class ServiceConfigurationValidationTest extends TestCase
         try {
             (new ServiceConfigurationCompilerPass($prefix))->process($container);
             $this->fail('Invalid configuration must be rejected.');
-        } catch (ServiceConfigurationException $exception) {
+        } catch (TypeMismatchException $exception) {
             $type = get_debug_type($invalid);
             $this->assertInstanceOf(TranslatableInterface::class, $exception);
             $this->assertSame(
-                'The configuration at ' . $path . ' must be an array; ' . $type . ' given.',
+                'The key "' . $path . '" of parameters must be of type array, ' . $type . ' given.',
                 $exception->getMessage()
             );
             $this->assertSame([
-                'path' => $path,
-                'type' => $type,
+                'key' => $path,
+                'source' => 'parameters',
+                'expected' => 'array',
+                'given' => $type,
             ], $exception->getTranslatableMessage()->getParameters());
-
-            $translator = new Translator('es');
-            $translator->addLoader('php', new PhpFileLoader());
-            $translator->addResource(
-                'php',
-                dirname(__DIR__, 2) . '/resources/translations/errors+intl-icu.es.php',
-                'es',
-                'errors+intl-icu'
-            );
-            $this->assertSame(
-                'La configuración en ' . $path . ' debe ser un array; se recibió ' . $type . '.',
-                $exception->trans($translator)
-            );
         }
 
         $this->assertSame([], $definition->getMethodCalls());

@@ -28,7 +28,7 @@ final class Component extends AbstractServiceMetadata implements ServiceMetadata
      *
      * @var string
      */
-    public readonly string $id;
+    protected readonly string $id;
 
     /**
      * Constructor.
@@ -38,9 +38,9 @@ final class Component extends AbstractServiceMetadata implements ServiceMetadata
      * @param string|null $description The description of the component.
      */
     public function __construct(
-        public readonly string $name,
-        public readonly string $package,
-        public readonly ?string $description = null
+        protected readonly string $name,
+        protected readonly string $package,
+        protected readonly ?string $description = null
     ) {
         $this->id = $this->getParentId() . '.' . $this->name;
     }
