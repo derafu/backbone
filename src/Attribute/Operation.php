@@ -35,7 +35,10 @@ use Attribute;
  * Every property here is optional and exists only to say something
  * reflection/PHPDoc cannot:
  *
- *   - `$name`/`$description` override the method's own PHPDoc summary/
+ *   - `$name` declares the external operation name. When it is `null`,
+ *     consumers use the PHP method name. This attribute stores the name;
+ *     resolving it to a method belongs to the consumer.
+ *   - `$summary`/`$description` override the method's own PHPDoc summary/
  *     description, for the (expected to be rare) case where the text
  *     written for PHP maintainers isn't the text an external API consumer
  *     should see. Leave both `null` to keep using PHPDoc, which is the
@@ -61,7 +64,9 @@ final class Operation
     /**
      * Constructor.
      *
-     * @param string|null $name Overrides the PHPDoc summary, if given.
+     * @param string|null $name External operation name, or null to use the
+     * PHP method name.
+     * @param string|null $summary Overrides the PHPDoc summary, if given.
      * @param string|null $description Overrides the PHPDoc description, if
      * given.
      * @param array<array-key, mixed> $parameters Per-parameter overrides/additions, keyed by
@@ -72,6 +77,7 @@ final class Operation
      */
     public function __construct(
         public readonly ?string $name = null,
+        public readonly ?string $summary = null,
         public readonly ?string $description = null,
         public readonly array $parameters = [],
         public readonly array $results = [],
@@ -79,12 +85,13 @@ final class Operation
     }
 
     /**
-     * @return array{name: string|null, description: string|null, parameters: array<array-key, mixed>, results: array<array-key, mixed>}
+     * @return array{name: string|null, summary: string|null, description: string|null, parameters: array<array-key, mixed>, results: array<array-key, mixed>}
      */
     public function toArray(): array
     {
         return [
             'name' => $this->name,
+            'summary' => $this->summary,
             'description' => $this->description,
             'parameters' => $this->parameters,
             'results' => $this->results,

@@ -28,6 +28,7 @@ final class OperationAttributeTest extends TestCase
 
         $this->assertSame([
             'name' => null,
+            'summary' => null,
             'description' => null,
             'parameters' => [],
             'results' => [],
@@ -42,7 +43,8 @@ final class OperationAttributeTest extends TestCase
         $operation = $attributes[0]->newInstance();
 
         $this->assertSame([
-            'name' => 'Send document',
+            'name' => 'send_document',
+            'summary' => 'Send document',
             'description' => 'Submits a document.',
             'parameters' => [
                 'document' => ['example' => ['id' => 7], 'type' => 'array', 'description' => 'Document data.'],
@@ -52,6 +54,25 @@ final class OperationAttributeTest extends TestCase
             ],
         ], $operation->toArray());
         $this->assertSame([], (new ReflectionMethod(OperationWorkerForTest::class, 'helper'))->getAttributes(Operation::class));
+    }
+
+    public function testNameIsTheFirstPositionalArgument(): void
+    {
+        $operation = new Operation(
+            'send_document',
+            'Send document',
+            'Submits a document.',
+            ['document' => ['example' => ['id' => 7]]],
+            ['success' => ['description' => 'Accepted.']],
+        );
+
+        $this->assertSame([
+            'name' => 'send_document',
+            'summary' => 'Send document',
+            'description' => 'Submits a document.',
+            'parameters' => ['document' => ['example' => ['id' => 7]]],
+            'results' => ['success' => ['description' => 'Accepted.']],
+        ], $operation->toArray());
     }
 
     public function testTheAttributeTargetsMethods(): void
@@ -64,7 +85,8 @@ final class OperationAttributeTest extends TestCase
 final class OperationWorkerForTest
 {
     #[Operation(
-        name: 'Send document',
+        name: 'send_document',
+        summary: 'Send document',
         description: 'Submits a document.',
         parameters: [
             'document' => ['example' => ['id' => 7], 'type' => 'array', 'description' => 'Document data.'],
